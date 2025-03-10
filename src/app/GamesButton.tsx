@@ -95,7 +95,7 @@ const NeumorphismButton = () => {
           </motion.div>
 
           <motion.p
-            className="absolute z-10 text-[5vh] text-[#2f00ff] font-bold lexend"
+            className="absolute z-10 text-[min(5vw,5vh)] text-[#2f00ff] font-bold lexend"
             style={{
               zIndex: 0, // Behind the original text
               filter: 'blur(10px)', // Optional, for a shadow-like effect
@@ -106,7 +106,7 @@ const NeumorphismButton = () => {
 
           {/* Original Text */}
           <motion.p 
-            className="text-[5vh] absolute z-10 text-[#ffffff] font-bold lexend"
+            className="text-[min(5vw,5vh)] absolute z-10 text-[#ffffff] font-bold lexend"
             style={{
               zIndex: 1, // Behind the original text
             }}

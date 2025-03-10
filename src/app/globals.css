@@ -11,9 +11,9 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  --custom-top-height: 35vh;
-  --custom-middle-height: 50vh;
-  --custom-bottom-height: 12vh;
+  --custom-top-height: 15vh;
+  --custom-middle-height: 30vh;
+  --custom-bottom-height: 32vh;
 }
 
 .big-style {

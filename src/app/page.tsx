@@ -29,19 +29,24 @@ function HomeContent() {
       </div>
       <div className="absolute top-0 left-0 w-full h-full z-10">
         <motion.div
-          className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-2 grid-rows-3 sm:grid-cols-3 sm:grid-rows-2"
+          className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3"
           animate={{ y: rotate ? "-150vh" : 0 }} // Slide elements when rotate is true
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
-          <div className="big-style h-[var(--custom-top-height)] z-11 col-start-1 col-end-1 row-start-1 row-end-2"></div>
-          <div className="big-style h-[var(--custom-top-height)] text-white lexend text-[100px] col-start-1 col-end-3 row-start-1 row-end-2"><NameCard /></div>
-          <div className="big-style h-[var(--custom-top-height)]">
-            <AboutButton /> {/* Toggles sliding */}
-          </div>
-          <div className="big-style h-[var(--custom-middle-height)]"><GamesButton /></div>
+          <div className="big-style h-[var(--custom-top-height)] text-white lexend text-[100px] col-start-1 col-end-4 row-start-1 row-end-2"><NameCard /></div>
+          <div className="big-style h-[var(--custom-middle-height)] z-11"><ReloadButton /></div>
           <div className="big-style h-[var(--custom-middle-height)]"><ProjectButton /></div>
-          <div className="big-style h-[var(--custom-middle-height)]"><BlogButton /></div>
+          <div className="big-style h-[var(--custom-middle-height)]"><AboutButton /></div>
+          <div className="big-style h-[var(--custom-bottom-height)]"><BlogButton /></div>
+          <div className="big-style h-[var(--custom-bottom-height)]"><GamesButton /></div>
+          <div className="big-style h-[var(--custom-bottom-height)]">Resume</div>
         </motion.div>
+
+        {/* <div className="absolute top-10 left-10 z-20">
+          <ReloadButton />
+        </div> */}
+        
+
         <motion.div
           className="absolute top-10 left-10 z-20"
           animate={{ y: rotate ? 0 : "150vh", opacity: rotate ? 1 : 0 }} // Fade in/out the home button
