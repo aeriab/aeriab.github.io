@@ -10,7 +10,6 @@ import BlogButton from "./BlogButton";
 import GamesButton from "./GamesButton";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import Image from 'next/image';
 
 function HomeContent() {
   const { rotate } = useRotation(); // Get state from RotationProvider
