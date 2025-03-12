@@ -6,7 +6,6 @@ import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import React from "react";
 
-const DOT_COLOR = new THREE.Color(0xffffff);
 const BACK_COLOR = new THREE.Color(0xc3f1ff);
 
 const clock = new THREE.Clock();
@@ -125,7 +124,6 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
     const intersects = raycaster.intersectObjects(scene.children, true);
 
     if (intersects.length > 0) {
-      const clickedObject = intersects[0].object;
       const clickPosition = intersects[0].point.clone();
 
       // Move the new dots slightly above the clicked position
