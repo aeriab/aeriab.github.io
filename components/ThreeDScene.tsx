@@ -31,7 +31,7 @@ function Wall() {
 }
 
 
-function Dots({ position }: { position: THREE.Vector3 }) {
+function LoneDot({ position }: { position: THREE.Vector3 }) {
   const groupRef = useRef<THREE.Group>(null);
   const [speed] = useState(new THREE.Vector3(0.003, 0.001, 0)); // Speed of movement (right and up)
 
@@ -42,24 +42,21 @@ function Dots({ position }: { position: THREE.Vector3 }) {
     if (!groupRef.current) return;
 
     const group = groupRef.current;
-    const numDots = 20;
     const boxSize = 1;
     const dotSize = 0.2;
     let adjustedColor = new THREE.Color(0xffffff).multiplyScalar(brightness);
     const material = new THREE.MeshBasicMaterial({color: adjustedColor});
 
-    for (let i = 0; i < numDots; i++) {
-      const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);
-      const dot = new THREE.Mesh(geometry, material);
+    const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);
+    const dot = new THREE.Mesh(geometry, material);
 
-      dot.position.set(
-        (Math.random() - 0.5) * boxSize + position.x,
-        (Math.random() - 0.5) * boxSize + position.y,
-        position.z + 0.1
-      );
+    dot.position.set(
+      (Math.random() - 0.5) * boxSize + position.x,
+      (Math.random() - 0.5) * boxSize + position.y,
+      position.z + 0.1
+    );
 
-      group.add(dot);
-    }
+    group.add(dot);
   }, [position]);
 
   // Update the position of all dots in the group
@@ -69,12 +66,12 @@ function Dots({ position }: { position: THREE.Vector3 }) {
     // Move each dot by the specified speed
     groupRef.current.children.forEach((dot) => {
       (dot as THREE.Mesh).position.add(speed); // Move the dot right and up
+      
     });
   });
 
   return <group ref={groupRef} />;
 }
-
 
 
 // Camera controller for forward movement
@@ -100,7 +97,7 @@ const CameraController = () => {
   return null;
 };
 
-const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) => {
+const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
   const { scene, camera } = useThree();
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -130,10 +127,10 @@ const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) =>
       // Move the new dots slightly above the clicked position
       clickPosition.y += 0.2; // Adjust height to stack dots
 
-      console.log("Clicked on:", clickedObject.name || clickedObject);
-      console.log("Click Position:", clickPosition);
+      // console.log("Clicked on:", clickedObject.name || clickedObject);
+      // console.log("Click Position:", clickPosition);
 
-      addDots(clickPosition);
+      addDot(clickPosition);
     }
   };
 
@@ -141,19 +138,20 @@ const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) =>
     // Handle a click without dragging (just create dots at the position of the click)
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+  
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
-
+  
     if (intersects.length > 0) {
       const clickPosition = intersects[0].point.clone();
-
-      // Move the new dots slightly above the clicked position
       clickPosition.y += 0.2; // Adjust height to stack dots
-
-      addDots(clickPosition);
+  
+      for (let i = 0; i < 10; i++) {
+        addDot(clickPosition);
+      }
     }
   };
+  
 
   useEffect(() => {
     window.addEventListener("mousedown", handleMouseDown);
@@ -165,7 +163,7 @@ const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) =>
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.addEventListener("click", handleClick);
+      window.removeEventListener("click", handleClick);
     };
   }, [isMouseDown]);
 
@@ -212,13 +210,28 @@ const ThreeDScene: React.FC = () => {
     id: string;
     position: THREE.Vector3;
   }
+
+  // interface Dots {
+  //   id: string;
+  //   position: THREE.Vector3;
+  // }
   
-  const [dotsList, setDotsList] = useState<Dot[]>([]);
+  // const [dotsList, setDotsList] = useState<Dots[]>([]);
+  const [dotList, setDotList] = useState<Dot[]>([]);
   // const [dotsList, setDotsList] = useState<{ id: number; position: THREE.Vector3 }[]>([]);
 
 
-  const addDots = (pos: THREE.Vector3) => {
-    setDotsList((prev) => [
+  // const addDots = (pos: THREE.Vector3) => {
+    
+  //   console.log("Clicking event going!!");
+  //   setDotsList((prev) => [
+  //     ...prev,
+  //     { id: `${Date.now()}-${Math.random()}`, position: pos.clone() },
+  //   ]);
+  // };
+
+  const addDot = (pos: THREE.Vector3) => {
+    setDotList((prev) => [
       ...prev,
       { id: `${Date.now()}-${Math.random()}`, position: pos.clone() },
     ]);
@@ -231,11 +244,11 @@ const ThreeDScene: React.FC = () => {
         style={{ background: backgroundColor.getStyle() }} // Apply the smooth background color change here
         gl={{ toneMapping: THREE.NoToneMapping }}
       >
-        <ClickHandler addDots={addDots} />
+        <ClickHandler addDot={addDot} />
         <CameraController />
         <Wall />
-        {dotsList.map((dot) => (
-          <Dots key={dot.id} position={dot.position} />
+        {dotList.map((dot) => (
+          <LoneDot key={dot.id} position={dot.position} />
         ))}
         <ambientLight />
         <directionalLight color={0xffffff} intensity={500} position={[10, 10, 10]} />
