@@ -1,15 +1,15 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRotation } from "../src/app/rotateContext";
+import { useNavigation } from "../src/app/rotateContext";
 import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import React from "react";
 
 const BACK_COLOR = new THREE.Color(0xc3f1ff);
+const ABOUT_COLOR = new THREE.Color(0xA8A8FF); // Color for About page
 
 const clock = new THREE.Clock();
-
 
 function Wall() {
   const wallRef = useRef<THREE.Mesh>(null);
@@ -24,11 +24,9 @@ function Wall() {
     <mesh ref={wallRef} position={[0, 0, -1]}>
       <boxGeometry args={[100, 100, 0.2]} />,
       <meshBasicMaterial color={BACK_COLOR} />
-      {/* <meshBasicMaterial color={new THREE.Color(BACK_COLOR).multiplyScalar(1.5)} /> */}
     </mesh>
   );
 }
-
 
 function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -76,27 +74,24 @@ function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: ()
   return <group ref={groupRef} />;
 }
 
-
 // Camera controller for forward movement
 const CameraController = () => {
   const { camera } = useThree();
-  const { rotate } = useRotation();
+  const { currentView } = useNavigation();
   const targetPosition = useRef(new THREE.Vector3(0, 0, 5)); // Initial camera position
 
   useEffect(() => {
-    if (rotate) {
+    if (currentView === "inAbout") {
       // Move forward by 5 units
       const direction = new THREE.Vector3();
       camera.getWorldDirection(direction); // Get forward direction
       direction.multiplyScalar(5); // Scale movement by 5 units
       targetPosition.current.add(direction);
     } else {
-      const direction = new THREE.Vector3();
-      camera.getWorldDirection(direction); // Get forward direction
-      direction.multiplyScalar(-5);
-      targetPosition.current.add(direction);
+      // Move back to the initial position
+      targetPosition.current.set(0, 0, 5);
     }
-  }, [rotate]);
+  }, [currentView, camera]);
 
   useFrame(() => {
     camera.position.lerp(targetPosition.current, 0.05); // Smooth movement
@@ -134,9 +129,6 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
       // Move the new dots slightly above the clicked position
       clickPosition.y += 0.2; // Adjust height to stack dots
 
-      // console.log("Clicked on:", clickedObject.name || clickedObject);
-      // console.log("Click Position:", clickPosition);
-
       addDot(clickPosition);
     }
   };
@@ -152,14 +144,11 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
     if (intersects.length > 0) {
       const clickPosition = intersects[0].point.clone();
       clickPosition.y += 0.2; // Adjust height to stack dots
-  
-      // Add dots to the appropriate list
       
-      addDot(clickPosition); // Only add dots to dotsList (or you could use addDot instead)
+      addDot(clickPosition);
     }
   };
   
-
   useEffect(() => {
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
@@ -170,7 +159,7 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("click", handleClick); // Fixed: now properly removing the click event listener
+      window.removeEventListener("click", handleClick);
     };
   }, [isMouseDown]);
 
@@ -180,38 +169,34 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
 // Main 3D scene component
 const ThreeDScene: React.FC = () => {
   const [backgroundColor, setBackgroundColor] = useState(BACK_COLOR); // Initial background color
+  const { currentView } = useNavigation();
 
-  // Smooth background color change when camera moves
-  const { rotate } = useRotation();
-
+  // Smooth background color change when view changes
   useEffect(() => {
-    if (rotate) {
-      // Animate the background color change
-      const targetColor = new THREE.Color(0xA8A8FF); // Lighter shade of blue
-      const startColor = new THREE.Color(backgroundColor);
+    // Determine target color based on current view
+    const targetColor = currentView === "inAbout" ? ABOUT_COLOR : BACK_COLOR;
+    const startColor = new THREE.Color(backgroundColor);
 
-      const duration = 600; // Animation duration in milliseconds
-      let startTime: number | null = null;
+    const duration = 600; // Animation duration in milliseconds
+    let startTime: number | null = null;
 
-      const animateColor = (time: number) => {
-        if (!startTime) startTime = time;
+    const animateColor = (time: number) => {
+      if (!startTime) startTime = time;
 
-        const elapsed = time - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-        // Interpolate between start and target colors
-        const interpolatedColor = startColor.clone().lerp(targetColor, progress);
-        setBackgroundColor(interpolatedColor);
+      // Interpolate between start and target colors
+      const interpolatedColor = startColor.clone().lerp(targetColor, progress);
+      setBackgroundColor(interpolatedColor);
 
-        if (progress < 1) {
-          requestAnimationFrame(animateColor);
-        }
-      };
+      if (progress < 1) {
+        requestAnimationFrame(animateColor);
+      }
+    };
 
-      requestAnimationFrame(animateColor);
-    }
-
-  }, [rotate]);
+    requestAnimationFrame(animateColor);
+  }, [currentView]);
 
   interface Dot {
     id: string;
@@ -236,7 +221,7 @@ const ThreeDScene: React.FC = () => {
     <div id="threeDContainer" className="absolute top-0 left-0 w-full h-full">
       <Canvas
         camera={{ position: [0, 0, 5], fov: 75 }}
-        style={{ background: backgroundColor.getStyle() }} // Apply the smooth background color change here
+        style={{ background: backgroundColor.getStyle() }}
         gl={{ toneMapping: THREE.NoToneMapping }}
       >
         <ClickHandler addDot={addDot} />

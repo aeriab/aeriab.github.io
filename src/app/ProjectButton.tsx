@@ -1,6 +1,6 @@
 "use client";
 
-import { useRotation } from './rotateContext';
+import { useNavigation } from './rotateContext';
 import { useRef } from "react";
 import {
   motion,
@@ -24,7 +24,7 @@ const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
   
-  const { toggleRotate } = useRotation();
+  const { currentView, toggleView } = useNavigation();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const x = useMotionValue(0);
@@ -77,7 +77,8 @@ const NeumorphismButton = () => {
           whileHover={{ scale: 1.4 }}
           whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          onClick={toggleRotate}
+          
+          onClick={toggleView}
           className="flex flex-col items-center justify-center h-[min(35vw,35vh)] w-[min(35vw,35vh)]"
         >
           <motion.div

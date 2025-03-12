@@ -1,26 +1,39 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type RotationContextType = {
-  rotate: boolean;
-  toggleRotate: () => void;
+type NavigationState = "inProjects" | "inAbout";
+
+type NavigationContextType = {
+  currentView: NavigationState;
+  navigateToProjects: () => void;
+  navigateToAbout: () => void;
+  toggleView: () => void;
 };
 
-const RotationContext = createContext<RotationContextType | undefined>(undefined);
+const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
-export const RotationProvider = ({ children }: { children: ReactNode }) => {
-  const [rotate, setRotate] = useState(false);
+export const NavigationProvider = ({ children }: { children: ReactNode }) => {
+  const [currentView, setCurrentView] = useState<NavigationState>("inProjects");
 
-  const toggleRotate = () => setRotate((prev) => !prev); // Toggle rotation
+  const navigateToProjects = () => setCurrentView("inProjects");
+  const navigateToAbout = () => setCurrentView("inAbout");
+  const toggleView = () => setCurrentView((prev) => 
+    prev === "inProjects" ? "inAbout" : "inProjects"
+  );
 
   return (
-    <RotationContext.Provider value={{ rotate, toggleRotate }}>
+    <NavigationContext.Provider value={{ 
+      currentView, 
+      navigateToProjects, 
+      navigateToAbout,
+      toggleView 
+    }}>
       {children}
-    </RotationContext.Provider>
+    </NavigationContext.Provider>
   );
 };
 
-export const useRotation = () => {
-  const context = useContext(RotationContext);
-  if (!context) throw new Error("useRotation must be used within RotationProvider");
+export const useNavigation = () => {
+  const context = useContext(NavigationContext);
+  if (!context) throw new Error("useNavigation must be used within NavigationProvider");
   return context;
 };

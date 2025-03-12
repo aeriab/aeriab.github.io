@@ -19,6 +19,7 @@ npm install tailwindcss-textshadow
 npm install gh-pages --save-dev
 npm install -D tailwindcss postcss autoprefixer
 npm i @next/font
+npm install @react-three/fiber@latest
 ```
 
 To run the development server:

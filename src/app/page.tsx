@@ -1,6 +1,6 @@
 "use client";
 
-import { RotationProvider, useRotation } from "./rotateContext";
+import { NavigationProvider, useNavigation } from "./rotateContext";
 import ThreeDScene from "../../components/ThreeDScene";
 import NameCard from "./nameCard";
 import ReloadButton from "./ReloadButton";
@@ -15,7 +15,10 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 function HomeContent() {
-  const { rotate } = useRotation();
+  const { currentView } = useNavigation();
+  const isInProjectsView = currentView === "inProjects";
+  const isInAboutView = currentView === "inAbout";
+  
   const [isInArtMode, setIsInArtMode] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const mainDivRef = useRef<HTMLDivElement>(null);
@@ -69,12 +72,10 @@ function HomeContent() {
           opacity: isMouseDown ? 0.0 : 1,
           pointerEvents: isInArtMode ? "none" : "auto",
         }}
-
         transition={{
           opacity: { duration: 2.0, ease: "linear", delay: isMouseDown ? 0 : 1 },
         }}
-
-        onUpdate={(latest) => { // Added onUpdate callback
+        onUpdate={(latest) => {
           if (Number(latest.opacity) <= 0.2) {
             setIsInArtMode(true);
           } else {
@@ -82,9 +83,10 @@ function HomeContent() {
           }
         }}
       >
+        {/* Projects View (Home) */}
         <motion.div
           className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3"
-          animate={{ y: rotate ? "-150vh" : 0 }}
+          animate={{ y: isInProjectsView ? 0 : "-150vh" }}
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
           <div className="big-style h-[var(--custom-top-height)] text-white lexend text-[100px] col-start-1 col-end-4 row-start-1 row-end-2"><NameCard /></div>
@@ -96,11 +98,12 @@ function HomeContent() {
           <div className="big-style h-[var(--custom-bottom-height)]"><ResumeButton /></div>
         </motion.div>
 
+        {/* About View */}
         <motion.div
           className="absolute top-0 left-0 w-full h-full z-12"
           animate={{
-            y: !rotate ? "150vh" : 0,
-            opacity: !rotate ? 0 : (isMouseDown ? 0.05 : 1),
+            y: isInAboutView ? 0 : "150vh",
+            opacity: isInAboutView ? (isMouseDown ? 0.05 : 1) : 0,
           }}
           transition={{
             y: { duration: 0.9, ease: "easeInOut" },
@@ -119,8 +122,8 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <RotationProvider>
+    <NavigationProvider>
       <HomeContent />
-    </RotationProvider>
+    </NavigationProvider>
   );
 }
