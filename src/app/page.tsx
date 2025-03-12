@@ -15,6 +15,7 @@ import { useState, useEffect, useRef } from "react";
 
 function HomeContent() {
   const { rotate } = useRotation();
+  const [isInArtMode, setIsInArtMode] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const mainDivRef = useRef<HTMLDivElement>(null);
 
@@ -65,10 +66,19 @@ function HomeContent() {
         className="absolute top-0 left-0 w-full h-full z-10"
         animate={{
           opacity: isMouseDown ? 0.0 : 1,
-          pointerEvents: isMouseDown ? "none" : "auto",
+          pointerEvents: isInArtMode ? "none" : "auto",
         }}
+
         transition={{
           opacity: { duration: 2.0, ease: "linear", delay: isMouseDown ? 0 : 1 },
+        }}
+
+        onUpdate={(latest) => { // Added onUpdate callback
+          if (Number(latest.opacity) <= 0.2) {
+            setIsInArtMode(true);
+          } else {
+            setIsInArtMode(false);
+          }
         }}
       >
         <motion.div
