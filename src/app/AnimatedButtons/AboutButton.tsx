@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavigation } from './rotateContext';
+import { useNavigation } from '../rotateContext';
 import { useRef } from "react";
 import {
   motion,
@@ -9,6 +9,13 @@ import {
   useSpring,
 } from "framer-motion";
 import Image from 'next/image';
+
+import { Lexend } from 'next/font/google';
+
+const roboto = Lexend({
+  weight: ['500'], // Specify the weights you want to load (optional)
+  subsets: ['latin'],     // Define the character subsets (optional)
+});
 
 const ButtonWrapper = () => {
   return (
@@ -23,8 +30,8 @@ const ButtonWrapper = () => {
 const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
-  
-  const { navigateToProjects } = useNavigation();
+
+  const { navigateToAbout } = useNavigation();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const x = useMotionValue(0);
@@ -61,8 +68,6 @@ const NeumorphismButton = () => {
 
   return (
     <motion.div
-      whileHover={{ scale: 3.1 }} // Increases size by 10% on hover
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -77,9 +82,8 @@ const NeumorphismButton = () => {
           whileHover={{ scale: 1.4 }}
           whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          
-          onClick={navigateToProjects}
-          className="flex flex-col items-center justify-center h-[min(35vw,35vh)] w-[min(35vw,35vh)]"
+          onClick={navigateToAbout}
+          className="flex flex-col items-center justify-center h-[min(17vw,17vh)] w-[min(17vw,17vh)]"
         >
           <motion.div
             ref={ref}
@@ -90,9 +94,7 @@ const NeumorphismButton = () => {
           >
             <Image 
               unoptimized
-              
               src="https://aeriab.github.io/official_profile_picture.svg"
-              // src="/official_profile_picture.SVG" 
               alt="Protein Logo" 
               className="w-full h-full"
               width={10} // Specify the width of the image (or use a value based on your layout)
@@ -102,25 +104,27 @@ const NeumorphismButton = () => {
           </motion.div>
 
           <motion.p
-            className="absolute z-10 text-[min(6vw,6vh)] text-[#2f00ff] font-bold lexend"
+            className="absolute z-10 text-[min(3vw,3vh)] text-[#2f00ff] font-bold lexend"
             style={{
               zIndex: 0, // Behind the original text
               filter: 'blur(10px)', // Optional, for a shadow-like effect
             }}
           >
-            PROJECTS
+            ABOUT
           </motion.p>
 
           {/* Original Text */}
           <motion.p 
-            className="text-[min(6vw,6vh)] absolute z-10 text-[#ffffff] lexend"
+            className={`${roboto.className} font-[500] text-[min(3vw,3vh)] absolute z-10 text-[#ffffff]`}
             style={{
               zIndex: 1, // Behind the original text
             }}
           >
-            PROJECTS
+            ABOUT
           </motion.p>
 
+
+          {/* <p className="text-xl absolute z-10 text-[#ffffff] lexend">ABOUT</p> */}
         </motion.button>
       </div>
       

@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavigation } from './rotateContext';
+import { useNavigation } from '../rotateContext';
 import { useRef } from "react";
 import {
   motion,
@@ -23,8 +23,8 @@ const ButtonWrapper = () => {
 const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
-
-  const { currentView, toggleView } = useNavigation();
+  
+  const { navigateToProjects } = useNavigation();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const x = useMotionValue(0);
@@ -61,6 +61,8 @@ const NeumorphismButton = () => {
 
   return (
     <motion.div
+      whileHover={{ scale: 3.1 }} // Increases size by 10% on hover
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -75,8 +77,9 @@ const NeumorphismButton = () => {
           whileHover={{ scale: 1.4 }}
           whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          onClick={toggleView}
-          className="flex flex-col items-center justify-center h-[min(17vw,17vh)] w-[min(17vw,17vh)]"
+          
+          onClick={navigateToProjects}
+          className="flex flex-col items-center justify-center h-[min(35vw,35vh)] w-[min(35vw,35vh)]"
         >
           <motion.div
             ref={ref}
@@ -99,28 +102,25 @@ const NeumorphismButton = () => {
           </motion.div>
 
           <motion.p
-            className="absolute z-10 text-[min(3vw,3vh)] text-[#2f00ff] font-bold lexend"
+            className="absolute z-10 text-[min(6vw,6vh)] text-[#2f00ff] font-bold lexend"
             style={{
               zIndex: 0, // Behind the original text
               filter: 'blur(10px)', // Optional, for a shadow-like effect
             }}
           >
-            HOME
+            PROJECTS
           </motion.p>
 
           {/* Original Text */}
           <motion.p 
-            className="text-[min(3vw,3vh)] absolute z-10 text-[#ffffff] font-bold lexend"
+            className="text-[min(6vw,6vh)] absolute z-10 text-[#ffffff] lexend"
             style={{
               zIndex: 1, // Behind the original text
             }}
           >
-            HOME
+            PROJECTS
           </motion.p>
 
-
-
-          {/* <p className="text-xl absolute z-10 text-[#ffffff] lexend">HOME</p> */}
         </motion.button>
       </div>
       

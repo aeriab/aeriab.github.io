@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavigation } from './rotateContext';
+import { useNavigation } from '../rotateContext';
 import { useRef } from "react";
 import {
   motion,
@@ -9,13 +9,6 @@ import {
   useSpring,
 } from "framer-motion";
 import Image from 'next/image';
-
-import { Lexend } from 'next/font/google';
-
-const roboto = Lexend({
-  weight: ['500'], // Specify the weights you want to load (optional)
-  subsets: ['latin'],     // Define the character subsets (optional)
-});
 
 const ButtonWrapper = () => {
   return (
@@ -31,7 +24,7 @@ const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
 
-  const { navigateToAbout } = useNavigation();
+  const { currentView, toggleView } = useNavigation();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const x = useMotionValue(0);
@@ -82,7 +75,7 @@ const NeumorphismButton = () => {
           whileHover={{ scale: 1.4 }}
           whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          onClick={navigateToAbout}
+          onClick={toggleView}
           className="flex flex-col items-center justify-center h-[min(17vw,17vh)] w-[min(17vw,17vh)]"
         >
           <motion.div
@@ -94,7 +87,9 @@ const NeumorphismButton = () => {
           >
             <Image 
               unoptimized
+              
               src="https://aeriab.github.io/official_profile_picture.svg"
+              // src="/official_profile_picture.SVG" 
               alt="Protein Logo" 
               className="w-full h-full"
               width={10} // Specify the width of the image (or use a value based on your layout)
@@ -110,21 +105,22 @@ const NeumorphismButton = () => {
               filter: 'blur(10px)', // Optional, for a shadow-like effect
             }}
           >
-            ABOUT
+            HOME
           </motion.p>
 
           {/* Original Text */}
           <motion.p 
-            className={`${roboto.className} font-[500] text-[min(3vw,3vh)] absolute z-10 text-[#ffffff]`}
+            className="text-[min(3vw,3vh)] absolute z-10 text-[#ffffff] font-bold lexend"
             style={{
               zIndex: 1, // Behind the original text
             }}
           >
-            ABOUT
+            HOME
           </motion.p>
 
 
-          {/* <p className="text-xl absolute z-10 text-[#ffffff] lexend">ABOUT</p> */}
+
+          {/* <p className="text-xl absolute z-10 text-[#ffffff] lexend">HOME</p> */}
         </motion.button>
       </div>
       

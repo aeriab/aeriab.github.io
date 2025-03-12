@@ -3,13 +3,16 @@
 import { NavigationProvider, useNavigation } from "./rotateContext";
 import ThreeDScene from "../../components/ThreeDScene";
 import NameCard from "./nameCard";
-import ReloadButton from "./ReloadButton";
-import HomeButton from "./HomeButton";
-import ProjectButton from "./ProjectButton";
-import AboutButton from "./AboutButton";
-import BlogButton from "./BlogButton";
-import GamesButton from "./GamesButton";
-import ResumeButton from "./ResumeButton";
+import ReloadButton from "./AnimatedButtons/ReloadButton";
+import HomeButton from "./AnimatedButtons/HomeButton";
+import ProjectButton from "./AnimatedButtons/ProjectButton";
+import AboutButton from "./AnimatedButtons/AboutButton";
+import BlogButton from "./AnimatedButtons/BlogButton";
+import GamesButton from "./AnimatedButtons/GamesButton";
+import ResumeButton from "./AnimatedButtons/ResumeButton";
+
+import SocialMediaButtons from "./SocialButtons";
+
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
@@ -111,8 +114,25 @@ function HomeContent() {
           }}
         >
           <div>
-            <h1 className="center">UNDER CONSTRUCTION</h1>
+            <br />
+            <br />
             <HomeButton />
+            <br />
+            <br />
+            <br />
+            <br />
+            <SocialMediaButtons 
+              github="https://github.com/aeriab"
+              linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
+              instagram="https://instagram.com/brendan_aeria1622"
+              twitter="https://x.com/BrendanAeria"
+              youtube="https://youtube.com/@brendan3511/featured"
+              className="mt-4"
+            />
+            <br />
+            <br />
+            <br />
+            <h1 className="flex items-center justify-center text-xl">UNDER CONSTRUCTION</h1>
           </div>
         </motion.div>
       </motion.div>
