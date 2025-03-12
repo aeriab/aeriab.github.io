@@ -34,8 +34,8 @@ function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: ()
   const groupRef = useRef<THREE.Group>(null);
   const [speed] = useState(new THREE.Vector3(0.003, 0.001, 0)); // Speed of movement (right and up)
 
-  let elapsed = clock.getElapsedTime();
-  let brightness = (Math.random() * 0.06 - 0.03) + Math.min(0.9,1.0 + 0.5 * (0.2 * Math.sin(0.39 * elapsed) + 0.5 * Math.cos(1.14 * elapsed) + 0.3 * Math.sin(1.52 * elapsed) + 0.81 * Math.cos(0.73 * elapsed)));
+  const elapsed = clock.getElapsedTime();
+  const brightness = (Math.random() * 0.06 - 0.03) + Math.min(0.9,1.0 + 0.5 * (0.2 * Math.sin(0.39 * elapsed) + 0.5 * Math.cos(1.14 * elapsed) + 0.3 * Math.sin(1.52 * elapsed) + 0.81 * Math.cos(0.73 * elapsed)));
 
   useEffect(() => {
     if (!groupRef.current) return;
@@ -43,7 +43,7 @@ function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: ()
     const group = groupRef.current;
     const boxSize = 1;
     const dotSize = 0.2;
-    let adjustedColor = new THREE.Color(0xffffff).multiplyScalar(brightness);
+    const adjustedColor = new THREE.Color(0xffffff).multiplyScalar(brightness);
     const material = new THREE.MeshBasicMaterial({color: adjustedColor});
 
     const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);

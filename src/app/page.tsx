@@ -34,8 +34,8 @@ function HomeContent() {
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
           <div className="big-style h-[var(--custom-top-height)] text-white lexend text-[100px] col-start-1 col-end-4 row-start-1 row-end-2"><NameCard /></div>
-          <div className="big-style h-[var(--custom-middle-height)] z-11"><ReloadButton /></div>
-          <div className="big-style h-[var(--custom-middle-height)]"><ProjectButton /></div>
+          <div className="big-style h-[var(--custom-middle-height)]"><ReloadButton /></div>
+          <div className="big-style h-[var(--custom-middle-height)] z-11"><ProjectButton /></div>
           <div className="big-style h-[var(--custom-middle-height)]"><AboutButton /></div>
           <div className="big-style h-[var(--custom-bottom-height)]"><BlogButton /></div>
           <div className="big-style h-[var(--custom-bottom-height)]"><GamesButton /></div>
