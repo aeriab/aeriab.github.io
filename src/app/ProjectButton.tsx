@@ -24,7 +24,7 @@ const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
   
-  const { currentView, toggleView } = useNavigation();
+  const { navigateToProjects } = useNavigation();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const x = useMotionValue(0);
@@ -78,7 +78,7 @@ const NeumorphismButton = () => {
           whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           
-          onClick={toggleView}
+          onClick={navigateToProjects}
           className="flex flex-col items-center justify-center h-[min(35vw,35vh)] w-[min(35vw,35vh)]"
         >
           <motion.div

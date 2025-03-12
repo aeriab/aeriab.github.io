@@ -85,7 +85,7 @@ function HomeContent() {
       >
         {/* Projects View (Home) */}
         <motion.div
-          className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3"
+          className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3 select-none"
           animate={{ y: isInProjectsView ? 0 : "-150vh" }}
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
@@ -100,7 +100,7 @@ function HomeContent() {
 
         {/* About View */}
         <motion.div
-          className="absolute top-0 left-0 w-full h-full z-12"
+          className="absolute top-0 left-0 w-full h-full z-12 select-none"
           animate={{
             y: isInAboutView ? 0 : "150vh",
             opacity: isInAboutView ? (isMouseDown ? 0.05 : 1) : 0,
@@ -111,7 +111,7 @@ function HomeContent() {
           }}
         >
           <div>
-            <h1>UNDER CONSTRUCTION</h1>
+            <h1 className="center">UNDER CONSTRUCTION</h1>
             <HomeButton />
           </div>
         </motion.div>

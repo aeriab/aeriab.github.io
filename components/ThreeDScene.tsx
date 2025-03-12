@@ -44,7 +44,7 @@ function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: ()
     const adjustedColor = new THREE.Color(0xffffff).multiplyScalar(brightness);
     const material = new THREE.MeshBasicMaterial({color: adjustedColor});
 
-    const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);
+    const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 8, 8);
     const dot = new THREE.Mesh(geometry, material);
 
     dot.position.set(
@@ -85,7 +85,12 @@ const CameraController = () => {
       // Move forward by 5 units
       const direction = new THREE.Vector3();
       camera.getWorldDirection(direction); // Get forward direction
-      direction.multiplyScalar(5); // Scale movement by 5 units
+      direction.multiplyScalar(-3); // Scale movement by 3 units
+      targetPosition.current.add(direction);
+    } else if (currentView === "inProjects") {
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction); // Get forward direction
+      direction.multiplyScalar(-3); // Scale movement by 3 units
       targetPosition.current.add(direction);
     } else {
       // Move back to the initial position
