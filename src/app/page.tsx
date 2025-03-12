@@ -11,26 +11,41 @@ import GamesButton from "./GamesButton";
 import ResumeButton from "./ResumeButton";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function HomeContent() {
-  const { rotate } = useRotation(); // Get state from RotationProvider
+  const { rotate } = useRotation();
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const mainDivRef = useRef<HTMLDivElement>(null);
 
-  // Add mouse event handlers
   useEffect(() => {
     const handleMouseDown = () => setIsMouseDown(true);
     const handleMouseUp = () => setIsMouseDown(false);
-    
+
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
-    
-    // Clean up event listeners on component unmount
+
     return () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
+
+  useEffect(() => {
+    const preventDrag = (e: DragEvent) => {
+      e.preventDefault();
+    };
+
+    if (mainDivRef.current && isMouseDown) {
+      mainDivRef.current.addEventListener('dragstart', preventDrag);
+    }
+
+    return () => {
+      if (mainDivRef.current) {
+        mainDivRef.current.removeEventListener('dragstart', preventDrag);
+      }
+    };
+  }, [isMouseDown]);
 
   return (
     <>
@@ -45,18 +60,20 @@ function HomeContent() {
       <div id="threeDContainer" className="absolute top-0 left-0 w-full h-full">
         <ThreeDScene />
       </div>
-      <motion.div 
+      <motion.div
+        ref={mainDivRef}
         className="absolute top-0 left-0 w-full h-full z-10"
-        animate={{ 
-          opacity: isMouseDown ? 0.0 : 1
+        animate={{
+          opacity: isMouseDown ? 0.0 : 1,
+          pointerEvents: isMouseDown ? "none" : "auto",
         }}
-        transition={{ 
-          opacity: { duration: 3.14, ease: "linear" }
+        transition={{
+          opacity: { duration: 2.0, ease: "linear", delay: isMouseDown ? 0 : 1 },
         }}
       >
         <motion.div
           className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3"
-          animate={{ y: rotate ? "-150vh" : 0 }} // Slide elements when rotate is true
+          animate={{ y: rotate ? "-150vh" : 0 }}
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
           <div className="big-style h-[var(--custom-top-height)] text-white lexend text-[100px] col-start-1 col-end-4 row-start-1 row-end-2"><NameCard /></div>
@@ -70,13 +87,13 @@ function HomeContent() {
 
         <motion.div
           className="absolute top-10 left-10 z-20"
-          animate={{ 
-            y: rotate ? 0 : "150vh", 
-            opacity: rotate ? (isMouseDown ? 0.05 : 1) : 0 
+          animate={{
+            y: rotate ? 0 : "150vh",
+            opacity: rotate ? (isMouseDown ? 0.05 : 1) : 0,
           }}
-          transition={{ 
+          transition={{
             y: { duration: 0.9, ease: "easeInOut" },
-            opacity: { duration: 0.4, ease: "easeInOut" }
+            opacity: { duration: 0.4, ease: "easeInOut" },
           }}
         >
           <ReloadButton />
