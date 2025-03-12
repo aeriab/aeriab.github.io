@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useNavigation } from "../src/app/rotateContext";
+import { useNavigation } from "../src/app/navigateContext";
 import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import React from "react";
@@ -50,7 +50,7 @@ function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: ()
     dot.position.set(
       (Math.random() - 0.5) * boxSize + position.x,
       (Math.random() - 0.5) * boxSize + position.y,
-      position.z + 0.1
+      position.z + 0.1 + Math.random() * 0.2
     );
 
     group.add(dot);
@@ -82,18 +82,15 @@ const CameraController = () => {
 
   useEffect(() => {
     if (currentView === "inAbout") {
-      // Move forward by 5 units
-      const direction = new THREE.Vector3();
-      camera.getWorldDirection(direction); // Get forward direction
-      direction.multiplyScalar(-3); // Scale movement by 3 units
-      targetPosition.current.add(direction);
+      console.log("AAAAAAAABBBBBBOOOOOOUUUUUUUUUUUTTTTTTTTTTT");
+      targetPosition.current.set(2, 3, 8);
     } else if (currentView === "inProjects") {
-      const direction = new THREE.Vector3();
-      camera.getWorldDirection(direction); // Get forward direction
-      direction.multiplyScalar(-3); // Scale movement by 3 units
-      targetPosition.current.add(direction);
+      console.log("Moving back to the initial position");
+      targetPosition.current.set(-2, -3, 8);
     } else {
       // Move back to the initial position
+      
+      console.log("SNAP BACK TO REALITY");
       targetPosition.current.set(0, 0, 5);
     }
   }, [currentView, camera]);

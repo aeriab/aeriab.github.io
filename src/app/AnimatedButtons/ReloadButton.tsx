@@ -101,7 +101,7 @@ const NeumorphismButton = () => {
               filter: 'blur(10px)', // Optional, for a shadow-like effect
             }}
           >
-            HOME
+            REFRESH
           </motion.p>
 
           {/* Original Text */}
@@ -111,7 +111,7 @@ const NeumorphismButton = () => {
               zIndex: 1, // Behind the original text
             }}
           >
-            HOME
+            REFRESH
           </motion.p>
 
 

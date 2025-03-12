@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavigation } from '../rotateContext';
+import { useNavigation } from '../navigateContext';
 import { useRef } from "react";
 import {
   motion,

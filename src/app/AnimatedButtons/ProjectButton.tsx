@@ -1,6 +1,6 @@
 "use client";
 
-import { useNavigation } from '../rotateContext';
+import { useNavigation } from '../navigateContext';
 import { useRef } from "react";
 import {
   motion,
@@ -18,26 +18,30 @@ const ButtonWrapper = () => {
   );
 };
 
-
-
 const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
-  
   const { navigateToProjects } = useNavigation();
-
-  const ref = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+  
+  // Motion values
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const theta = useMotionValue(0);
+  const rotation = useMotionValue(0);
+  
+  // Springs for smoother animation
   const xSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const ySpring = useSpring(y, { stiffness: 300, damping: 30 });
-  const rotationDegree = useSpring(theta, { stiffness: 10, damping: 15});
+  const rotationSpring = useSpring(rotation, { stiffness: 10, damping: 15 });
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+  // Transform templates
+  const containerTransform = useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`;
+  const imageTransform = useMotionTemplate`rotateZ(${rotationSpring}deg)`;
 
-    const rect = ref.current.getBoundingClientRect();
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!buttonRef.current) return;
+
+    const rect = buttonRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
 
@@ -51,81 +55,80 @@ const NeumorphismButton = () => {
 
     x.set(tX);
     y.set(tY);
-    theta.set((tX * 0.1) * 35.0)
+    rotation.set(tX * 3.5); // Simplified rotation calculation
   };
 
   const handleMouseLeave = () => {
-      x.set(0);  // Reset rotations on mouse leave
-      y.set(0);
+    x.set(0);
+    y.set(0);
+    rotation.set(0);
   };
 
   return (
     <motion.div
-      whileHover={{ scale: 3.1 }} // Increases size by 10% on hover
+      ref={buttonRef}
+      whileHover={{ scale: 3.1 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
         transformStyle: "preserve-3d",
-        transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,
+        transform: containerTransform,
         willChange: "transform",
-      }} className="w-full h-full"
+      }}
+      className="w-full h-full"
     >
       <div className="w-full h-full flex items-center justify-center">
         <motion.button 
           whileHover={{ scale: 1.4 }}
-          whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
+          whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          
           onClick={navigateToProjects}
-          className="flex flex-col items-center justify-center h-[min(35vw,35vh)] w-[min(35vw,35vh)]"
+          className="flex flex-col items-center justify-center h-[min(35vw,35vh)] w-[min(35vw,35vh)] relative"
         >
+          {/* Image with rotation */}
           <motion.div
-            ref={ref}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            style={{ transformStyle: "preserve-3d", transformOrigin: "center", willChange: "transform", transform: useMotionTemplate`rotateZ(${rotationDegree}deg)` }}
+            style={{ 
+              transformStyle: "preserve-3d", 
+              transformOrigin: "center", 
+              willChange: "transform", 
+              transform: imageTransform,
+            }}
             className="w-full h-full"
           >
             <Image 
               unoptimized
-              
               src="https://aeriab.github.io/official_profile_picture.svg"
-              // src="/official_profile_picture.SVG" 
               alt="Protein Logo" 
               className="w-full h-full"
-              width={10} // Specify the width of the image (or use a value based on your layout)
-              height={10} // Specify the height of the image (or use a value based on your layout)
+              width={10}
+              height={10}
             />
-            {/* <img src="/official_profile_picture.svg" alt="Globe Logo" className="w-full h-full"/> */}
           </motion.div>
 
+          {/* Glow text (behind) */}
           <motion.p
-            className="absolute z-10 text-[min(6vw,6vh)] text-[#2f00ff] font-bold lexend"
+            className="absolute text-[min(6vw,6vh)] text-[#2f00ff] font-bold lexend"
             style={{
-              zIndex: 0, // Behind the original text
-              filter: 'blur(10px)', // Optional, for a shadow-like effect
+              zIndex: 0,
+              filter: 'blur(10px)',
             }}
           >
             PROJECTS
           </motion.p>
 
-          {/* Original Text */}
+          {/* Main text (front) */}
           <motion.p 
-            className="text-[min(6vw,6vh)] absolute z-10 text-[#ffffff] lexend"
+            className="text-[min(6vw,6vh)] absolute text-[#ffffff] lexend"
             style={{
-              zIndex: 1, // Behind the original text
+              zIndex: 1,
             }}
           >
             PROJECTS
           </motion.p>
-
         </motion.button>
       </div>
-      
     </motion.div>
-    
   );
 };
 

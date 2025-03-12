@@ -1,6 +1,6 @@
 "use client";
 
-import { NavigationProvider, useNavigation } from "./rotateContext";
+import { NavigationProvider, useNavigation } from "./navigateContext";
 import ThreeDScene from "../../components/ThreeDScene";
 import NameCard from "./nameCard";
 import ReloadButton from "./AnimatedButtons/ReloadButton";
@@ -12,6 +12,7 @@ import GamesButton from "./AnimatedButtons/GamesButton";
 import ResumeButton from "./AnimatedButtons/ResumeButton";
 
 import SocialMediaButtons from "./SocialButtons";
+import PointerSwipe from "./PointerSwipe";
 
 import Head from "next/head";
 import { motion } from "framer-motion";
@@ -21,6 +22,7 @@ function HomeContent() {
   const { currentView } = useNavigation();
   const isInProjectsView = currentView === "inProjects";
   const isInAboutView = currentView === "inAbout";
+  const isInHomeView = currentView === "inHome";
   
   const [isInArtMode, setIsInArtMode] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -86,13 +88,19 @@ function HomeContent() {
           }
         }}
       >
-        {/* Projects View (Home) */}
+
+        {/* Home */}
         <motion.div
           className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3 select-none"
-          animate={{ y: isInProjectsView ? 0 : "-150vh" }}
+          animate={{ y: isInHomeView ? 0 : "-150vh" }}
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
-          <div className="big-style h-[var(--custom-top-height)] text-white lexend text-[100px] col-start-1 col-end-4 row-start-1 row-end-2"><NameCard /></div>
+          <div className="big-style h-0 text-white lexend text-[min(8vw,8vh)] col-start-1 col-end-2 row-start-1 row-end-2 z-13">
+            <PointerSwipe />
+          </div>
+          <div className="big-style h-[var(--custom-top-height)] text-white lexend col-start-1 col-end-4 row-start-1 row-end-2">
+            <NameCard />
+          </div>
           <div className="big-style h-[var(--custom-middle-height)]"><ReloadButton /></div>
           <div className="big-style h-[var(--custom-middle-height)] z-11"><ProjectButton /></div>
           <div className="big-style h-[var(--custom-middle-height)]"><AboutButton /></div>
@@ -101,12 +109,13 @@ function HomeContent() {
           <div className="big-style h-[var(--custom-bottom-height)]"><ResumeButton /></div>
         </motion.div>
 
-        {/* About View */}
+        {/* Projects */}
         <motion.div
           className="absolute top-0 left-0 w-full h-full z-12 select-none"
+          initial={{ y: "150vh", opacity: 0 }}
           animate={{
-            y: isInAboutView ? 0 : "150vh",
-            opacity: isInAboutView ? (isMouseDown ? 0.05 : 1) : 0,
+            y: isInProjectsView ? 0 : "150vh",
+            opacity: isInProjectsView ? (isMouseDown ? 0.05 : 1) : 0,
           }}
           transition={{
             y: { duration: 0.9, ease: "easeInOut" },
@@ -132,10 +141,50 @@ function HomeContent() {
             <br />
             <br />
             <br />
+            <h1 className="flex items-center justify-center text-xl">PROJECTS</h1>
+            <h1 className="flex items-center justify-center text-xl">UNDER CONSTRUCTION</h1>
+          </div>
+        </motion.div>
+
+        {/* About View */}
+        <motion.div
+          className="absolute top-0 left-0 w-full h-full z-12 select-none"
+          initial={{ y: "150vh", opacity: 0 }}
+          animate={{
+            y: !isInAboutView ? "150vh" : 0,
+            opacity: !isInAboutView ? 0 : (isMouseDown ? 0.05 : 1),
+          }}
+          transition={{
+            y: { duration: 0.9, ease: "easeInOut" },
+            opacity: { duration: 0.4, ease: "easeInOut" },
+          }}
+        >
+          <div>
+            <br />
+            <br />
+            <HomeButton />
+            <br />
+            <br />
+            <br />
+            <br />
+            <SocialMediaButtons 
+              github="https://github.com/aeriab"
+              linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
+              instagram="https://instagram.com/brendan_aeria1622"
+              twitter="https://x.com/BrendanAeria"
+              youtube="https://youtube.com/@brendan3511/featured"
+              className="mt-4"
+            />
+            <br />
+            <br />
+            <br />
+            <h1 className="flex items-center justify-center text-xl">ABOUT ME</h1>
             <h1 className="flex items-center justify-center text-xl">UNDER CONSTRUCTION</h1>
           </div>
         </motion.div>
       </motion.div>
+
+
     </>
   );
 }

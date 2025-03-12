@@ -1,31 +1,29 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type NavigationState = "inProjects" | "inAbout";
+type NavigationState = "inProjects" | "inAbout" | "inHome";
 
 type NavigationContextType = {
   currentView: NavigationState;
   navigateToProjects: () => void;
   navigateToAbout: () => void;
-  toggleView: () => void;
+  navigateToHome: () => void;
 };
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
 export const NavigationProvider = ({ children }: { children: ReactNode }) => {
-  const [currentView, setCurrentView] = useState<NavigationState>("inProjects");
+  const [currentView, setCurrentView] = useState<NavigationState>("inHome");
 
   const navigateToProjects = () => setCurrentView("inProjects");
   const navigateToAbout = () => setCurrentView("inAbout");
-  const toggleView = () => setCurrentView((prev) => 
-    prev === "inProjects" ? "inAbout" : "inProjects"
-  );
+  const navigateToHome = () => setCurrentView("inHome");
 
   return (
     <NavigationContext.Provider value={{ 
       currentView, 
       navigateToProjects, 
       navigateToAbout,
-      toggleView 
+      navigateToHome,
     }}>
       {children}
     </NavigationContext.Provider>
