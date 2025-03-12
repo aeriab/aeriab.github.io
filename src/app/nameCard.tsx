@@ -90,7 +90,7 @@ const NameCard = () => {
                         pointerEvents: "none",
                         cursor: "default"
                     }}
-                    className="mx-auto text-4xl bg-[#d4f0fc] rounded-xl shadow-lg h-[80%]"
+                    className="mx-auto text-[min(20vw,20vh)] bg-[#d4f0fc] rounded-xl shadow-lg h-[80%]"
                 >
                     <p 
                         style={{
@@ -99,7 +99,7 @@ const NameCard = () => {
                             pointerEvents: "none",
                             cursor: "default"
                         }}
-                        className="width-full height-full position-absolute top-0 left-0 text-[#01313f] lexend text-[10vh] text-center"
+                        className="width-full height-full position-absolute top-0 left-0 text-[#01313f] lexend text-[min(10vw,10vh)] text-center"
                     >
                         Brendan Aeria
                     </p>
