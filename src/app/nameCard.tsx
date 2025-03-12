@@ -8,11 +8,7 @@ import {
     useSpring,
 } from "framer-motion";
 
-
-
 const ROTATION_RANGE = 6.0;
-
-
 
 const NameCard = () => {
     const ref = useRef<HTMLDivElement | null>(null);
@@ -64,15 +60,49 @@ const NameCard = () => {
         style={{
             transformStyle: "preserve-3d",
             transform,
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            pointerEvents: "none",
+            cursor: "default"
         }}
         className="width-full height-full position-absolute top-0 left-0"
         >
-            <div style={{transform: "translateZ(10vh)",transformStyle: "preserve-3d",paddingLeft: "1vh",paddingTop: "1vh",paddingRight: "1vh",paddingBottom: "1vh"}}className="big-style rounded-xl bg-[#88d6fa] shadow-lg">
-                <div style={{
+            <div 
+                style={{
+                    transform: "translateZ(10vh)",
+                    transformStyle: "preserve-3d",
+                    paddingLeft: "1vh",
+                    paddingTop: "1vh",
+                    paddingRight: "1vh",
+                    paddingBottom: "1vh",
+                    userSelect: "none",
+                    WebkitUserSelect: "none",
+                    pointerEvents: "none",
+                    cursor: "default"
+                }}
+                className="big-style rounded-xl bg-[#88d6fa] shadow-lg"
+            >
+                <div 
+                    style={{
                         transform: "translateZ(3vh)",
+                        userSelect: "none",
+                        WebkitUserSelect: "none",
+                        pointerEvents: "none",
+                        cursor: "default"
                     }}
-                    className="mx-auto text-4xl bg-[#d4f0fc] rounded-xl shadow-lg h-[80%]">
-                    <p className="width-full height-full position-absolute top-0 left-0 text-[#01313f] lexend text-[10vh] text-center">Brendan Aeria</p>
+                    className="mx-auto text-4xl bg-[#d4f0fc] rounded-xl shadow-lg h-[80%]"
+                >
+                    <p 
+                        style={{
+                            userSelect: "none",
+                            WebkitUserSelect: "none",
+                            pointerEvents: "none",
+                            cursor: "default"
+                        }}
+                        className="width-full height-full position-absolute top-0 left-0 text-[#01313f] lexend text-[10vh] text-center"
+                    >
+                        Brendan Aeria
+                    </p>
                 </div>
             </div>
         </motion.div>
