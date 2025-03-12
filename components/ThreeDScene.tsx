@@ -21,8 +21,9 @@ function Wall() {
 
   return (
     <mesh ref={wallRef} position={[0, 0, -1]}>
-      <boxGeometry args={[100, 100, 0.2]} />
-      <meshBasicMaterial color={new THREE.Color(BACK_COLOR).multiplyScalar(1.5)} />
+      <boxGeometry args={[100, 100, 0.2]} />,
+      <meshBasicMaterial color={BACK_COLOR} />
+      {/* <meshBasicMaterial color={new THREE.Color(BACK_COLOR).multiplyScalar(1.5)} /> */}
     </mesh>
   );
 }
@@ -38,7 +39,7 @@ function Dots({ position }: { position: THREE.Vector3 }) {
     const numDots = 20;
     const boxSize = 1;
     const dotSize = 0.2;
-    const material = new THREE.MeshStandardMaterial({color: DOT_COLOR});
+    const material = new THREE.MeshBasicMaterial({color: DOT_COLOR});
 
     for (let i = 0; i < numDots; i++) {
       const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);
