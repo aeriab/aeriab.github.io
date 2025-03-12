@@ -4,6 +4,7 @@ import { RotationProvider, useRotation } from "./rotateContext";
 import ThreeDScene from "../../components/ThreeDScene";
 import NameCard from "./nameCard";
 import ReloadButton from "./ReloadButton";
+import HomeButton from "./HomeButton";
 import ProjectButton from "./ProjectButton";
 import AboutButton from "./AboutButton";
 import BlogButton from "./BlogButton";
@@ -96,18 +97,20 @@ function HomeContent() {
         </motion.div>
 
         <motion.div
-          className="absolute top-10 left-10 z-20"
+          className="absolute top-0 left-0 w-full h-full z-12"
           animate={{
-            y: rotate ? 0 : "150vh",
-            opacity: rotate ? (isMouseDown ? 0.05 : 1) : 0,
+            y: !rotate ? "150vh" : 0,
+            opacity: !rotate ? 0 : (isMouseDown ? 0.05 : 1),
           }}
           transition={{
             y: { duration: 0.9, ease: "easeInOut" },
             opacity: { duration: 0.4, ease: "easeInOut" },
           }}
         >
-          <ReloadButton />
-          <h1>UNDER CONSTRUCTION</h1>
+          <div>
+            <h1>UNDER CONSTRUCTION</h1>
+            <HomeButton />
+          </div>
         </motion.div>
       </motion.div>
     </>

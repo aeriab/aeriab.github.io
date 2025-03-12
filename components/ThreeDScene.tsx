@@ -90,6 +90,11 @@ const CameraController = () => {
       camera.getWorldDirection(direction); // Get forward direction
       direction.multiplyScalar(5); // Scale movement by 5 units
       targetPosition.current.add(direction);
+    } else {
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction); // Get forward direction
+      direction.multiplyScalar(-5);
+      targetPosition.current.add(direction);
     }
   }, [rotate]);
 
