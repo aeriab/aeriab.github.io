@@ -9,6 +9,8 @@ import React from "react";
 const DOT_COLOR = new THREE.Color(0xffffff);
 const BACK_COLOR = new THREE.Color(0xc3f1ff);
 
+const clock = new THREE.Clock();
+
 
 function Wall() {
   const wallRef = useRef<THREE.Mesh>(null);
@@ -32,6 +34,11 @@ function Wall() {
 function Dots({ position }: { position: THREE.Vector3 }) {
   const groupRef = useRef<THREE.Group>(null);
 
+  let elapsed = clock.getElapsedTime();
+  let brightness = 1.0 + 0.5 * (0.2 * Math.sin(0.39 * elapsed) + 0.5 * Math.cos(1.14 * elapsed) + 0.3 * Math.sin(1.52 * elapsed) + 0.81 * Math.cos(0.73 * elapsed));
+
+  // 0.1\sin\left(0.39x\right)+0.5\cos\left(1.14x\right)\ +\ 0.2\sin\left(1.52x\right)+0.81\cos\left(0.73x\right)
+
   useEffect(() => {
     if (!groupRef.current) return;
 
@@ -39,7 +46,8 @@ function Dots({ position }: { position: THREE.Vector3 }) {
     const numDots = 20;
     const boxSize = 1;
     const dotSize = 0.2;
-    const material = new THREE.MeshBasicMaterial({color: DOT_COLOR});
+    let adjustedColor = new THREE.Color(0xffffff).multiplyScalar(brightness);
+    const material = new THREE.MeshBasicMaterial({color: adjustedColor});
 
     for (let i = 0; i < numDots; i++) {
       const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);
@@ -96,12 +104,15 @@ const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) =>
 
     if (intersects.length > 0) {
       const clickedObject = intersects[0].object;
-      const clickPosition = intersects[0].point;
+      const clickPosition = intersects[0].point.clone();
 
-      if (clickedObject.name === "Wall") {
-        console.log("Wall clicked at:", clickPosition);
-        addDots(clickPosition); // Add Dots at this position
-      }
+      // Move the new dots slightly above the clicked position
+      clickPosition.y += 0.2; // Adjust height to stack dots
+
+      console.log("Clicked on:", clickedObject.name || clickedObject);
+      console.log("Click Position:", clickPosition);
+
+      addDots(clickPosition);
     }
   };
 
