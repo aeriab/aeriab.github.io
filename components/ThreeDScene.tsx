@@ -104,8 +104,18 @@ const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) =>
   const { scene, camera } = useThree();
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
+  const [isMouseDown, setIsMouseDown] = useState(false); // Track if the mouse is being dragged
 
-  const handleClick = (event: MouseEvent) => {
+  const handleMouseDown = () => {
+    setIsMouseDown(true);
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+  };
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (!isMouseDown) return;
     // Convert screen coordinates to normalized device coordinates (NDC)
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -127,12 +137,37 @@ const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) =>
     }
   };
 
+  const handleClick = (event: MouseEvent) => {
+    // Handle a click without dragging (just create dots at the position of the click)
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    if (intersects.length > 0) {
+      const clickPosition = intersects[0].point.clone();
+
+      // Move the new dots slightly above the clicked position
+      clickPosition.y += 0.2; // Adjust height to stack dots
+
+      addDots(clickPosition);
+    }
+  };
+
   useEffect(() => {
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("click", handleClick);
+
     return () => {
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.addEventListener("click", handleClick);
     };
-  }, []);
+  }, [isMouseDown]);
 
   return null;
 };
@@ -173,10 +208,20 @@ const ThreeDScene: React.FC = () => {
 
   }, [rotate]);
 
-  const [dotsList, setDotsList] = useState<{ id: number; position: THREE.Vector3 }[]>([]);
+  interface Dot {
+    id: string;
+    position: THREE.Vector3;
+  }
+  
+  const [dotsList, setDotsList] = useState<Dot[]>([]);
+  // const [dotsList, setDotsList] = useState<{ id: number; position: THREE.Vector3 }[]>([]);
+
 
   const addDots = (pos: THREE.Vector3) => {
-    setDotsList((prev) => [...prev, { id: Date.now(), position: pos.clone() }]);
+    setDotsList((prev) => [
+      ...prev,
+      { id: `${Date.now()}-${Math.random()}`, position: pos.clone() },
+    ]);
   };
 
   return (
