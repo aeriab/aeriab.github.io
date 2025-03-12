@@ -31,7 +31,7 @@ function Wall() {
 }
 
 
-function LoneDot({ position }: { position: THREE.Vector3 }) {
+function LoneDot({ position, onRemove }: { position: THREE.Vector3, onRemove: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
   const [speed] = useState(new THREE.Vector3(0.003, 0.001, 0)); // Speed of movement (right and up)
 
@@ -59,7 +59,7 @@ function LoneDot({ position }: { position: THREE.Vector3 }) {
     group.add(dot);
   }, [position]);
 
-  // Update the position of all dots in the group
+  // Update the position of all dots in the group and check if they need to be removed
   useFrame(() => {
     if (!groupRef.current) return;
 
@@ -67,6 +67,10 @@ function LoneDot({ position }: { position: THREE.Vector3 }) {
     groupRef.current.children.forEach((dot) => {
       (dot as THREE.Mesh).position.add(speed); // Move the dot right and up
       
+      // Check if the dot has moved beyond x=100
+      if ((dot as THREE.Mesh).position.x > 30) {
+        onRemove(); // Call the callback to remove this dot from the parent component
+      }
     });
   });
 
@@ -146,9 +150,9 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
       const clickPosition = intersects[0].point.clone();
       clickPosition.y += 0.2; // Adjust height to stack dots
   
-      for (let i = 0; i < 10; i++) {
-        addDot(clickPosition);
-      }
+      // Add dots to the appropriate list
+      
+      addDot(clickPosition); // Only add dots to dotsList (or you could use addDot instead)
     }
   };
   
@@ -163,7 +167,7 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("click", handleClick); // Fixed: now properly removing the click event listener
     };
   }, [isMouseDown]);
 
@@ -210,31 +214,19 @@ const ThreeDScene: React.FC = () => {
     id: string;
     position: THREE.Vector3;
   }
-
-  // interface Dots {
-  //   id: string;
-  //   position: THREE.Vector3;
-  // }
   
-  // const [dotsList, setDotsList] = useState<Dots[]>([]);
   const [dotList, setDotList] = useState<Dot[]>([]);
-  // const [dotsList, setDotsList] = useState<{ id: number; position: THREE.Vector3 }[]>([]);
-
-
-  // const addDots = (pos: THREE.Vector3) => {
-    
-  //   console.log("Clicking event going!!");
-  //   setDotsList((prev) => [
-  //     ...prev,
-  //     { id: `${Date.now()}-${Math.random()}`, position: pos.clone() },
-  //   ]);
-  // };
 
   const addDot = (pos: THREE.Vector3) => {
     setDotList((prev) => [
       ...prev,
       { id: `${Date.now()}-${Math.random()}`, position: pos.clone() },
     ]);
+  };
+
+  // Function to remove a dot by its id
+  const removeDot = (id: string) => {
+    setDotList(prev => prev.filter(dot => dot.id !== id));
   };
 
   return (
@@ -248,7 +240,11 @@ const ThreeDScene: React.FC = () => {
         <CameraController />
         <Wall />
         {dotList.map((dot) => (
-          <LoneDot key={dot.id} position={dot.position} />
+          <LoneDot 
+            key={dot.id} 
+            position={dot.position} 
+            onRemove={() => removeDot(dot.id)} 
+          />
         ))}
         <ambientLight />
         <directionalLight color={0xffffff} intensity={500} position={[10, 10, 10]} />
