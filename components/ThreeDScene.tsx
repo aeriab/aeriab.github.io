@@ -9,84 +9,50 @@ import React from "react";
 const DOT_COLOR = new THREE.Color(0xffffff);
 const BACK_COLOR = new THREE.Color(0xc3f1ff);
 
-// Creates dots in a group
-function Dots() {
-  const groupRef = useRef<THREE.Group>(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const movement = useRef({ x: 0, y: 0, z: 0 });
 
+function Wall() {
+  const wallRef = useRef<THREE.Mesh>(null);
+
+  useEffect(() => {
+    if (wallRef.current) {
+      wallRef.current.name = "Wall"; // Give it a name for identification
+    }
+  }, []);
+
+  return (
+    <mesh ref={wallRef} position={[0, 0, -1]}>
+      <boxGeometry args={[100, 100, 0.2]} />
+      <meshBasicMaterial color={new THREE.Color(BACK_COLOR).multiplyScalar(1.5)} />
+    </mesh>
+  );
+}
+
+// Creates dots in a group
+function Dots({ position }: { position: THREE.Vector3 }) {
+  const groupRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
     if (!groupRef.current) return;
 
     const group = groupRef.current;
-    const numDots = 500;
-    const boxSize = 10;
+    const numDots = 20;
+    const boxSize = 1;
     const dotSize = 0.2;
-    const material = new THREE.MeshStandardMaterial({ 
-      color: DOT_COLOR, 
-      emissive: 0xffffff,
-      roughness: 0.1,
-      metalness: 1.0
-    });
+    const material = new THREE.MeshStandardMaterial({color: DOT_COLOR});
 
     for (let i = 0; i < numDots; i++) {
-      const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 32, 32);
+      const geometry = new THREE.SphereGeometry(dotSize * (Math.random() + 0.1), 16, 16);
       const dot = new THREE.Mesh(geometry, material);
 
-      // Random position within the box
       dot.position.set(
-        (Math.random() - 0.5) * boxSize * 2,
-        (Math.random() - 0.5) * boxSize * 2,
-        (Math.random() - 0.4) * boxSize * 0.65
+        (Math.random() - 0.5) * boxSize + position.x,
+        (Math.random() - 0.5) * boxSize + position.y,
+        position.z + 0.1
       );
 
       group.add(dot);
     }
-
-    // Mouse movement tracking
-    const onMouseMove = (event: MouseEvent) => {
-      mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-    };
-  }, []);
-
-  useFrame(() => {
-    if (!groupRef.current) return;
-
-    // const SPEED_MAX = 0.002;
-    const boxSize = 10;
-
-    // Update movement values
-    // movement.current.x += Math.max(-SPEED_MAX, Math.min(mouseRef.current.x - movement.current.x, SPEED_MAX));
-    // movement.current.y += Math.max(-SPEED_MAX, Math.min(mouseRef.current.y - movement.current.y, SPEED_MAX));
-    
-    movement.current.x += 0.0008;
-    movement.current.y += 0.0010;
-
-    // Apply movement to dots
-    groupRef.current.children.forEach((dot) => {
-      dot.position.x += movement.current.x * 0.05;
-      dot.position.y += movement.current.y * 0.05;
-
-      // Wrap-around effect
-      if (dot.position.x > boxSize) dot.position.x -= 2 * boxSize;
-      else if (dot.position.x < -boxSize) dot.position.x += 2 * boxSize;
-
-      if (dot.position.y > boxSize) dot.position.y -= 2 * boxSize;
-      else if (dot.position.y < -boxSize) dot.position.y += 2 * boxSize;
-    });
-
-    // Smooth out movement over time
-    movement.current.x *= 0.95;
-    movement.current.y *= 0.95;
-  });
+  }, [position]);
 
   return <group ref={groupRef} />;
 }
@@ -110,6 +76,40 @@ const CameraController = () => {
   useFrame(() => {
     camera.position.lerp(targetPosition.current, 0.05); // Smooth movement
   });
+
+  return null;
+};
+
+const ClickHandler = ({ addDots }: { addDots: (pos: THREE.Vector3) => void }) => {
+  const { scene, camera } = useThree();
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  const handleClick = (event: MouseEvent) => {
+    // Convert screen coordinates to normalized device coordinates (NDC)
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    if (intersects.length > 0) {
+      const clickedObject = intersects[0].object;
+      const clickPosition = intersects[0].point;
+
+      if (clickedObject.name === "Wall") {
+        console.log("Wall clicked at:", clickPosition);
+        addDots(clickPosition); // Add Dots at this position
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClick);
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, []);
 
   return null;
 };
@@ -147,18 +147,30 @@ const ThreeDScene: React.FC = () => {
 
       requestAnimationFrame(animateColor);
     }
+
   }, [rotate]);
+
+  const [dotsList, setDotsList] = useState<{ id: number; position: THREE.Vector3 }[]>([]);
+
+  const addDots = (pos: THREE.Vector3) => {
+    setDotsList((prev) => [...prev, { id: Date.now(), position: pos.clone() }]);
+  };
 
   return (
     <div id="threeDContainer" className="absolute top-0 left-0 w-full h-full">
       <Canvas
         camera={{ position: [0, 0, 5], fov: 75 }}
         style={{ background: backgroundColor.getStyle() }} // Apply the smooth background color change here
+        gl={{ toneMapping: THREE.NoToneMapping }}
       >
+        <ClickHandler addDots={addDots} />
         <CameraController />
-        <Dots />
+        <Wall />
+        {dotsList.map((dot) => (
+          <Dots key={dot.id} position={dot.position} />
+        ))}
         <ambientLight />
-        <directionalLight color={0xffffff} intensity={20000000} position={[10, 10, 10]} />
+        <directionalLight color={0xffffff} intensity={500} position={[10, 10, 10]} />
       </Canvas>
     </div>
   );
