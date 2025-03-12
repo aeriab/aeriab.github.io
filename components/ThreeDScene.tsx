@@ -30,14 +30,13 @@ function Wall() {
   );
 }
 
-// Creates dots in a group
+
 function Dots({ position }: { position: THREE.Vector3 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const [speed] = useState(new THREE.Vector3(0.003, 0.001, 0)); // Speed of movement (right and up)
 
   let elapsed = clock.getElapsedTime();
-  let brightness = 1.0 + 0.5 * (0.2 * Math.sin(0.39 * elapsed) + 0.5 * Math.cos(1.14 * elapsed) + 0.3 * Math.sin(1.52 * elapsed) + 0.81 * Math.cos(0.73 * elapsed));
-
-  // 0.1\sin\left(0.39x\right)+0.5\cos\left(1.14x\right)\ +\ 0.2\sin\left(1.52x\right)+0.81\cos\left(0.73x\right)
+  let brightness = (Math.random() * 0.06 - 0.03) + Math.min(0.9,1.0 + 0.5 * (0.2 * Math.sin(0.39 * elapsed) + 0.5 * Math.cos(1.14 * elapsed) + 0.3 * Math.sin(1.52 * elapsed) + 0.81 * Math.cos(0.73 * elapsed)));
 
   useEffect(() => {
     if (!groupRef.current) return;
@@ -63,8 +62,20 @@ function Dots({ position }: { position: THREE.Vector3 }) {
     }
   }, [position]);
 
+  // Update the position of all dots in the group
+  useFrame(() => {
+    if (!groupRef.current) return;
+
+    // Move each dot by the specified speed
+    groupRef.current.children.forEach((dot) => {
+      (dot as THREE.Mesh).position.add(speed); // Move the dot right and up
+    });
+  });
+
   return <group ref={groupRef} />;
 }
+
+
 
 // Camera controller for forward movement
 const CameraController = () => {
