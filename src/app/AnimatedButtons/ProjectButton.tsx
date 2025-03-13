@@ -1,7 +1,7 @@
 "use client";
 
 import { useNavigation } from '../navigateContext';
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -38,43 +38,68 @@ const NeumorphismButton = () => {
   const containerTransform = useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`;
   const imageTransform = useMotionTemplate`rotateZ(${rotationSpring}deg)`;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!buttonRef.current) return;
 
     const rect = buttonRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
 
-    // Calculate mouse position relative to the div
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    // Calculate pointer position relative to the div
+    const pointerX = e.clientX - rect.left;
+    const pointerY = e.clientY - rect.top;
 
-    // Map mouse coordinates to translation range
-    const tX = (mouseX / width - 0.5) * TRANSLATE_RANGE;
-    const tY = (mouseY / height - 0.5) * TRANSLATE_RANGE;
+    // Map pointer coordinates to translation range
+    const tX = (pointerX / width - 0.5) * TRANSLATE_RANGE;
+    const tY = (pointerY / height - 0.5) * TRANSLATE_RANGE;
 
     x.set(tX);
     y.set(tY);
     rotation.set(tX * 3.5); // Simplified rotation calculation
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     x.set(0);
     y.set(0);
     rotation.set(0);
   };
 
+  // Clean up function to reset values if touch is canceled
+  const handlePointerCancel = () => {
+    handlePointerLeave();
+  };
+
+  // Add event listeners for touch events
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      // Prevent default to avoid scrolling when interacting with the button
+      e.preventDefault();
+    };
+
+    button.addEventListener('touchstart', handleTouchStart, { passive: false });
+    
+    return () => {
+      button.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, []);
+
   return (
     <motion.div
       ref={buttonRef}
       whileHover={{ scale: 3.1 }}
+      whileTap={{ scale: 3.1 }} // Match the hover scale for touch
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onPointerCancel={handlePointerCancel}
       style={{
         transformStyle: "preserve-3d",
         transform: containerTransform,
         willChange: "transform",
+        touchAction: "none", // Prevent browser handling of all panning and zooming gestures
       }}
       className="w-full h-full"
     >

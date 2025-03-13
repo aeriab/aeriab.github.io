@@ -107,7 +107,36 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   const [isMouseDown, setIsMouseDown] = useState(false); // Track if the mouse is being dragged
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  useEffect(() => {
+    // Get canvas element for touch event coordinates calculation
+    const canvasElement = document.querySelector('canvas');
+    if (canvasElement) {
+      canvasRef.current = canvasElement;
+    }
+  }, []);
+
+  // Helper function to handle pointer positions (both mouse and touch)
+  const handlePointerPosition = (clientX: number, clientY: number, isDrag = false) => {
+    // Only perform the action if it's a click or if it's a drag and isMouseDown is true
+    if (!isDrag || (isDrag && isMouseDown)) {
+      // Convert screen coordinates to normalized device coordinates (NDC)
+      mouse.x = (clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children, true);
+
+      if (intersects.length > 0) {
+        const clickPosition = intersects[0].point.clone();
+        clickPosition.y += 0.2; // Adjust height to stack dots
+        addDot(clickPosition);
+      }
+    }
+  };
+
+  // Mouse events
   const handleMouseDown = () => {
     setIsMouseDown(true);
   };
@@ -117,51 +146,68 @@ const ClickHandler = ({ addDot }: { addDot: (pos: THREE.Vector3) => void }) => {
   };
 
   const handleMouseMove = (event: MouseEvent) => {
-    if (!isMouseDown) return;
-    // Convert screen coordinates to normalized device coordinates (NDC)
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children, true);
-
-    if (intersects.length > 0) {
-      const clickPosition = intersects[0].point.clone();
-
-      // Move the new dots slightly above the clicked position
-      clickPosition.y += 0.2; // Adjust height to stack dots
-
-      addDot(clickPosition);
-    }
+    handlePointerPosition(event.clientX, event.clientY, true);
   };
 
   const handleClick = (event: MouseEvent) => {
-    // Handle a click without dragging (just create dots at the position of the click)
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children, true);
-  
-    if (intersects.length > 0) {
-      const clickPosition = intersects[0].point.clone();
-      clickPosition.y += 0.2; // Adjust height to stack dots
-      
-      addDot(clickPosition);
+    handlePointerPosition(event.clientX, event.clientY);
+  };
+
+  // Touch events
+  const handleTouchStart = (event: TouchEvent) => {
+    if (event.touches.length > 0) {
+      setIsMouseDown(true);
+      // Prevent default to avoid scrolling while interacting with the canvas
+      event.preventDefault();
     }
   };
-  
+
+  const handleTouchEnd = () => {
+    setIsMouseDown(false);
+  };
+
+  const handleTouchMove = (event: TouchEvent) => {
+    if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      handlePointerPosition(touch.clientX, touch.clientY, true);
+      // Prevent default to avoid scrolling while interacting with the canvas
+      event.preventDefault();
+    }
+  };
+
+  const handleTouchTap = (event: TouchEvent) => {
+    if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      handlePointerPosition(touch.clientX, touch.clientY);
+      // Prevent default to avoid double actions on some devices
+      event.preventDefault();
+    }
+  };
+
   useEffect(() => {
+    // Add event listeners for both mouse and touch events
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("click", handleClick);
+    
+    // Touch events
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchstart", handleTouchTap, { passive: false });
 
     return () => {
+      // Clean up all event listeners
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("click", handleClick);
+      
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchstart", handleTouchTap);
     };
   }, [isMouseDown]);
 
@@ -219,8 +265,27 @@ const ThreeDScene: React.FC = () => {
     setDotList(prev => prev.filter(dot => dot.id !== id));
   };
 
+  // Meta tag to disable unwanted touch behaviors on mobile
+  useEffect(() => {
+    // Add meta viewport tag to prevent unwanted pinch zoom
+    let metaTag = document.querySelector('meta[name="viewport"]');
+    if (!metaTag) {
+      metaTag = document.createElement('meta');
+      metaTag.setAttribute('name', 'viewport');
+      document.head.appendChild(metaTag);
+    }
+    metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    
+    return () => {
+      // Clean up - revert to default viewport if needed
+      if (metaTag) {
+        metaTag.setAttribute('content', 'width=device-width, initial-scale=1.0');
+      }
+    };
+  }, []);
+
   return (
-    <div id="threeDContainer" className="absolute top-0 left-0 w-full h-full">
+    <div id="threeDContainer" className="absolute top-0 left-0 w-full h-full touch-none">
       <Canvas
         camera={{ position: [0, 0, 5], fov: 75 }}
         style={{ background: backgroundColor.getStyle() }}
