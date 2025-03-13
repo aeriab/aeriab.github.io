@@ -26,18 +26,26 @@ function HomeContent() {
   
   const [isInArtMode, setIsInArtMode] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isPointerDown, setIsPointerDown] = useState(false);
   const mainDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleMouseDown = () => setIsMouseDown(true);
     const handleMouseUp = () => setIsMouseDown(false);
+    const handlePointerDown = () => setIsPointerDown(true);
+    const handlePointerUp = () => setIsPointerDown(false);
 
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointerup', handlePointerUp);
+
     return () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
     };
   }, []);
 
@@ -46,7 +54,7 @@ function HomeContent() {
       e.preventDefault();
     };
 
-    if (mainDivRef.current && isMouseDown) {
+    if (mainDivRef.current && (isMouseDown || isPointerDown)) {
       mainDivRef.current.addEventListener('dragstart', preventDrag);
     }
 
@@ -55,7 +63,7 @@ function HomeContent() {
         mainDivRef.current.removeEventListener('dragstart', preventDrag);
       }
     };
-  }, [isMouseDown]);
+  }, [isMouseDown, isPointerDown]);
 
   return (
     <>
@@ -74,11 +82,11 @@ function HomeContent() {
         ref={mainDivRef}
         className="absolute top-0 left-0 w-full h-full z-10"
         animate={{
-          opacity: isMouseDown ? 0.0 : 1,
+          opacity: (isMouseDown || isPointerDown) ? 0.0 : 1,
           pointerEvents: isInArtMode ? "none" : "auto",
         }}
         transition={{
-          opacity: { duration: 2.0, ease: "linear", delay: isMouseDown ? 0 : 1 },
+          opacity: { duration: 2.0, ease: "linear", delay: (isMouseDown || isPointerDown) ? 0 : 1 },
         }}
         onUpdate={(latest) => {
           if (Number(latest.opacity) <= 0.2) {
@@ -115,7 +123,7 @@ function HomeContent() {
           initial={{ y: "150vh", opacity: 0 }}
           animate={{
             y: isInProjectsView ? 0 : "150vh",
-            opacity: isInProjectsView ? (isMouseDown ? 0.05 : 1) : 0,
+            opacity: isInProjectsView ? ((isMouseDown || isPointerDown) ? 0.05 : 1) : 0,
           }}
           transition={{
             y: { duration: 0.9, ease: "easeInOut" },
@@ -152,7 +160,7 @@ function HomeContent() {
           initial={{ y: "150vh", opacity: 0 }}
           animate={{
             y: !isInAboutView ? "150vh" : 0,
-            opacity: !isInAboutView ? 0 : (isMouseDown ? 0.05 : 1),
+            opacity: !isInAboutView ? 0 : ((isMouseDown || isPointerDown) ? 0.05 : 1),
           }}
           transition={{
             y: { duration: 0.9, ease: "easeInOut" },

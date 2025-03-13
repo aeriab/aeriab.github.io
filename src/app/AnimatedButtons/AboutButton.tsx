@@ -1,7 +1,7 @@
 "use client";
 
 import { useNavigation } from '../navigateContext';
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -13,8 +13,8 @@ import Image from 'next/image';
 import { Lexend } from 'next/font/google';
 
 const roboto = Lexend({
-  weight: ['500'], // Specify the weights you want to load (optional)
-  subsets: ['latin'],     // Define the character subsets (optional)
+  weight: ['500'], // Specify the weights you want to load
+  subsets: ['latin'], // Define the character subsets
 });
 
 const ButtonWrapper = () => {
@@ -25,12 +25,9 @@ const ButtonWrapper = () => {
   );
 };
 
-
-
 const TRANSLATE_RANGE = 150.0;
 
 const NeumorphismButton = () => {
-
   const { navigateToAbout } = useNavigation();
 
   const ref = useRef<HTMLDivElement | null>(null);
@@ -41,41 +38,65 @@ const NeumorphismButton = () => {
   const ySpring = useSpring(y, { stiffness: 300, damping: 30 });
   const rotationDegree = useSpring(theta, { stiffness: 10, damping: 15});
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handlePointerMove = (e: React.PointerEvent) => {
     if (!ref.current) return;
 
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
 
-    // Calculate mouse position relative to the div
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    // Calculate pointer position relative to the div
+    const pointerX = e.clientX - rect.left;
+    const pointerY = e.clientY - rect.top;
 
-    // Map mouse coordinates to translation range
-    const tX = (mouseX / width - 0.5) * TRANSLATE_RANGE;
-    const tY = (mouseY / height - 0.5) * TRANSLATE_RANGE;
+    // Map pointer coordinates to translation range
+    const tX = (pointerX / width - 0.5) * TRANSLATE_RANGE;
+    const tY = (pointerY / height - 0.5) * TRANSLATE_RANGE;
 
     x.set(tX);
     y.set(tY);
     theta.set((tX * 0.1) * 35.0)
   };
 
-  const handleMouseLeave = () => {
-      x.set(0);  // Reset rotations on mouse leave
-      y.set(0);
+  const handlePointerLeave = () => {
+    x.set(0);  // Reset rotations on pointer leave
+    y.set(0);
   };
+  
+  const handlePointerCancel = () => {
+    handlePointerLeave();
+  };
+
+  // Add event listeners for touch events
+  useEffect(() => {
+    const button = ref.current;
+    if (!button) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      // Prevent default to avoid scrolling when interacting with the button
+      e.preventDefault();
+    };
+
+    button.addEventListener('touchstart', handleTouchStart, { passive: false });
+    
+    return () => {
+      button.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, []);
 
   return (
     <motion.div
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onPointerCancel={handlePointerCancel}
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,
         willChange: "transform",
-      }} className="w-full h-full"
+        touchAction: "none", // Prevent browser handling of all panning and zooming gestures
+      }} 
+      className="w-full h-full"
     >
       <div className="w-full h-full flex items-center justify-center">
         <motion.button 
@@ -86,10 +107,12 @@ const NeumorphismButton = () => {
           className="flex flex-col items-center justify-center h-[min(17vw,17vh)] w-[min(17vw,17vh)]"
         >
           <motion.div
-            ref={ref}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            style={{ transformStyle: "preserve-3d", transformOrigin: "center", willChange: "transform", transform: useMotionTemplate`rotateZ(${rotationDegree}deg)` }}
+            style={{ 
+              transformStyle: "preserve-3d", 
+              transformOrigin: "center", 
+              willChange: "transform", 
+              transform: useMotionTemplate`rotateZ(${rotationDegree}deg)` 
+            }}
             className="w-full h-full"
           >
             <Image 
@@ -97,39 +120,32 @@ const NeumorphismButton = () => {
               src="https://aeriab.github.io/official_profile_picture.svg"
               alt="Protein Logo" 
               className="w-full h-full"
-              width={10} // Specify the width of the image (or use a value based on your layout)
-              height={10} // Specify the height of the image (or use a value based on your layout)
+              width={10}
+              height={10}
             />
-            {/* <img src="/official_profile_picture.svg" alt="Globe Logo" className="w-full h-full"/> */}
           </motion.div>
 
           <motion.p
             className="absolute z-10 text-[min(3vw,3vh)] text-[#2f00ff] font-bold lexend"
             style={{
-              zIndex: 0, // Behind the original text
-              filter: 'blur(10px)', // Optional, for a shadow-like effect
+              zIndex: 0,
+              filter: 'blur(10px)',
             }}
           >
             ABOUT
           </motion.p>
 
-          {/* Original Text */}
           <motion.p 
             className={`${roboto.className} font-[500] text-[min(3vw,3vh)] absolute z-10 text-[#ffffff]`}
             style={{
-              zIndex: 1, // Behind the original text
+              zIndex: 1,
             }}
           >
             ABOUT
           </motion.p>
-
-
-          {/* <p className="text-xl absolute z-10 text-[#ffffff] lexend">ABOUT</p> */}
         </motion.button>
       </div>
-      
     </motion.div>
-    
   );
 };
 

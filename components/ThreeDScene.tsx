@@ -82,15 +82,10 @@ const CameraController = () => {
 
   useEffect(() => {
     if (currentView === "inAbout") {
-      console.log("AAAAAAAABBBBBBOOOOOOUUUUUUUUUUUTTTTTTTTTTT");
       targetPosition.current.set(2, 3, 8);
     } else if (currentView === "inProjects") {
-      console.log("Moving back to the initial position");
       targetPosition.current.set(-2, -3, 8);
     } else {
-      // Move back to the initial position
-      
-      console.log("SNAP BACK TO REALITY");
       targetPosition.current.set(0, 0, 5);
     }
   }, [currentView, camera]);
