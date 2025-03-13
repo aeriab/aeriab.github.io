@@ -156,7 +156,7 @@ function HomeContent() {
 
         {/* About View */}
         <motion.div
-          className="absolute top-0 left-0 w-full h-full z-12 select-none"
+          className="fixed top-0 left-0 w-screen h-screen z-12 select-none overflow-hidden flex items-center justify-center"
           initial={{ y: "150vh", opacity: 0 }}
           animate={{
             y: !isInAboutView ? "150vh" : 0,
@@ -167,27 +167,26 @@ function HomeContent() {
             opacity: { duration: 0.4, ease: "easeInOut" },
           }}
         >
-          <div>
-            <br />
-            <br />
+          <div className="flex flex-col items-center justify-center p-4 max-w-2xl"> {/* Added p-4 and max-w-2xl */}
             <HomeButton />
-            <br />
-            <br />
-            <br />
-            <br />
-            <SocialMediaButtons 
+            <img src="https://aeriab.github.io/PowayPark_Profile_Pic.jpg" alt="Picture" className="max-w-[200px] w-full" /> {/* Added max-w-[200px] and w-full */}
+            <h1 className="text-[min(5vw,5vh)] text-[#000000] font-bold lexend text-center">Brendan Aeria</h1> {/* Added text-center */}
+            <p className="text-[min(2vw,2vh)] text-[#000000] font-bold lexend text-center mt-4"> {/* Added text-center and mt-4 */}
+              Computation and Systems Biology Undergraduate · UCLA class of 2027
+            </p>
+            <p className="text-[min(2vw,2vh)] text-[#000000] font-bold lexend text-center mt-8 leading-relaxed"> {/* Added text-center, mt-8, and leading-relaxed */}
+              As the research coordinator for CruX UCLA, I lead the development of Brain Computer Interface software and contribute to research publications on EEG/EMG transfer learning. My experience extends to game development, where I have won two university-wide game jams and serve as the Game Jam Officer for ACM Studio UCLA. Additionally, I have internship experience in AI content development and machine learning model engineering.
+            </p>
+            <SocialMediaButtons
               github="https://github.com/aeriab"
               linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
               instagram="https://instagram.com/brendan_aeria1622"
               twitter="https://x.com/BrendanAeria"
               youtube="https://youtube.com/@brendan3511/featured"
-              className="mt-4"
+              className="mt-8" // Increased margin
             />
-            <br />
-            <br />
-            <br />
-            <h1 className="flex items-center justify-center text-xl">ABOUT ME</h1>
-            <h1 className="flex items-center justify-center text-xl">UNDER CONSTRUCTION</h1>
+            <h1 className="flex items-center justify-center text-xl mt-8">ABOUT ME</h1> {/* Increased margin */}
+            <h1 className="flex items-center justify-center text-xl mt-2">UNDER CONSTRUCTION</h1> {/* Added margin */}
           </div>
         </motion.div>
       </motion.div>
