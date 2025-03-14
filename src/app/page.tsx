@@ -65,6 +65,8 @@ function HomeContent() {
     };
   }, [isMouseDown, isPointerDown]);
 
+  const isActive = isMouseDown || isPointerDown;
+
   return (
     <>
       <Head>
@@ -75,9 +77,25 @@ function HomeContent() {
           rel="stylesheet"
         />
       </Head>
+
       <div id="threeDContainer" className="absolute top-0 left-0 w-full h-full">
         <ThreeDScene />
       </div>
+
+
+      <motion.div
+        className="fixed top-4 right-4 bg-white/80 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-[min(3vh,3vw)] font-semibold"
+        animate={!isActive ? "hidden" : "visible" }
+        variants={{
+          visible: { opacity: [1, 0.6, 1], transition: { duration: 1.5, repeat: Infinity } },
+          hidden: { opacity: 0, transition: { duration: 1.3 } }
+        }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+      >
+        ☁️ Cloud Drawing Mode Active
+      </motion.div>
+
+
       <motion.div
         ref={mainDivRef}
         className="absolute top-0 left-0 w-full h-full z-10 p-[4%]"
@@ -96,7 +114,6 @@ function HomeContent() {
           }
         }}
       >
-
         {/* Home */}
         <motion.div
           className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-5 grid-rows-[1fr_1fr_2fr_2fr] select-none"
@@ -104,7 +121,7 @@ function HomeContent() {
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
           {/* Row 1: Nameplate */}
-          <div className="big-style h-0 text-white lexend text-[min(8vw,8vh)] col-start-1 col-end-2 row-start-1 row-end-2 z-13">
+          <div className="big-style h-0 text-white lexend text-[min(8vw,8vh)] col-start-5 col-end-6 row-start-1 row-end-2 z-13">
             <PointerSwipe />
           </div>
           <div className="big-style h-[var(--custom-top-height)] text-white lexend col-start-1 col-end-6 row-start-1 row-end-2">
@@ -145,7 +162,7 @@ function HomeContent() {
 
         {/* About View */}
         <motion.div
-          className="p-[6vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-[1fr_8fr_1fr_8fr_1fr] grid-rows-[1fr_1fr_6fr_1fr_1fr] select-none"
+          className="p-[6vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-[1fr_8fr_1fr_8fr_1fr] grid-rows-[1fr_1fr_6fr_1fr_1fr_2fr] select-none"
           initial={{ y: "150vh", opacity: 0 }}
           animate={{
             // y: !isInAboutView ? "150vh" : 0,
@@ -158,7 +175,7 @@ function HomeContent() {
           <div className="big-style col-start-1 col-end-6 row-start-1 row-end-2">
             <h1 className="text-[min(5vw,5vh)] text-[#000000] font-bold lexend text-center h-[5vh]">Brendan Aeria</h1>
           </div>
-          <div className="big-style col-start-1 col-end-6 row-start-2 row-end-3">
+          <div className="big-style col-start-1 col-end-6 row-start-2 row-end-3 h-[min(15vh,15vw)]">
             <SocialMediaButtons
               github="https://github.com/aeriab"
               linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
@@ -172,7 +189,7 @@ function HomeContent() {
             <motion.img 
               src="https://aeriab.github.io/PowayPark_Profile_Pic.jpg" 
               alt="Picture" 
-              className="w-[min(30vw,30vh)] rounded-lg"
+              className="w-[min(30vw,30vh)] rounded-[min(100vh,100vw)]"
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
@@ -184,17 +201,17 @@ function HomeContent() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
-              <p className="text-[min(3.2vw,3.2vh)] text-[#000000] font-bold lexend">
+              <p className="text-[min(3.2vw,3.2vh)] text-[#000000] font-bold lexend leading-[min(3.8vw,3.8vh)]">
                 Computation and Systems Biology Undergraduate · UCLA class of 2027 <br />
               </p>
-              <p className="text-[min(1.6vw,1.6vh)] text-[#000000] lexend text-left mt-[3.0vh]">
+              <p className="text-[min(1.6vw,1.6vh)] text-[#000000] lexend text-left mt-[3.0vh] leading-[min(3.9vw,3.9vh)]">
                 As the research coordinator for CruX UCLA, I lead the development of Brain Computer Interface software and contribute to research publications on EEG/EMG transfer learning. My experience extends to game development, where I have won two university-wide game jams and serve as the Game Jam Officer for ACM Studio UCLA. Additionally, I have internship experience in AI content development and machine learning model engineering.
               </p>
             </motion.div>
           </div>
 
           <motion.div 
-            className="big-style col-start-1 col-end-6 row-start-4 row-end-5"
+            className="big-style col-start-1 col-end-6 row-start-5 row-end-6"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
