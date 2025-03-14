@@ -84,7 +84,7 @@ function HomeContent() {
 
 
       <motion.div
-        className="fixed top-4 right-4 bg-white/80 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-[min(3vh,3vw)] font-semibold"
+        className="fixed top-4 right-4 bg-white/80 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-[min(3vh,3vw)] font-semibold z-13"
         animate={!isActive ? "hidden" : "visible" }
         variants={{
           visible: { opacity: [1, 0.6, 1], transition: { duration: 1.5, repeat: Infinity } },
