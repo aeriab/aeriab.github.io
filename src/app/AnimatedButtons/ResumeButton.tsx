@@ -55,11 +55,16 @@ const NeumorphismButton = () => {
       y.set(0);
   };
 
+  const goToResume = () => {
+    window.open('https://aeriab.github.io/resume/resume_2025.pdf', '_blank');
+};
+
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={goToResume}
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,

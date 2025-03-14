@@ -55,11 +55,16 @@ const NeumorphismButton = () => {
       y.set(0);
   };
 
+  const refreshSite = () => {
+    window.location.reload();
+  };
+
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={refreshSite}
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,

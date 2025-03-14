@@ -89,7 +89,7 @@ const NeumorphismButton = () => {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerCancel}
-      onTouchStart={handleTouchStart} // Ensure touch interactions are captured
+      onTouchStart={navigateToAbout} // Ensure touch interactions are captured
       onTouchEnd={navigateToAbout} // Trigger navigation on tap
       style={{
         transformStyle: "preserve-3d",

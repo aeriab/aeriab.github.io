@@ -77,12 +77,29 @@ const NeumorphismButton = () => {
     };
   }, []);
 
+  const handleTouchStart = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  useEffect(() => {
+    const button = ref.current;
+    if (!button) return;
+  
+    button.addEventListener("touchstart", handleTouchStart);
+    return () => {
+      button.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, []);
+
   return (
     <motion.div
       ref={ref}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerCancel}
+      onTouchStart={navigateToHome}
+      onTouchEnd={navigateToHome}
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,

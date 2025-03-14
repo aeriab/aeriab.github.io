@@ -95,6 +95,7 @@ const NeumorphismButton = () => {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerCancel}
+      onTouchStart={navigateToProjects}
       style={{
         transformStyle: "preserve-3d",
         transform: containerTransform,

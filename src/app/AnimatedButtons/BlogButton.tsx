@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -55,11 +55,32 @@ const NeumorphismButton = () => {
       y.set(0);
   };
 
+  const handleTouchStart = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  const navigateToBlog = () => {
+    window.open('https://aeriab.github.io/aeria-blog/', '_blank');
+  }
+
+  useEffect(() => {
+    const button = ref.current;
+    if (!button) return;
+  
+    button.addEventListener("touchstart", handleTouchStart);
+    return () => {
+      button.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, []);
+
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={navigateToBlog}
+      onTouchEnd={navigateToBlog}
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,
@@ -78,7 +99,8 @@ const NeumorphismButton = () => {
             ref={ref}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            style={{ transformStyle: "preserve-3d", transformOrigin: "center", willChange: "transform", transform: useMotionTemplate`rotateZ(${rotationDegree}deg)` }}
+            onTouchStart={handleTouchStart}
+            style={{ touchAction: "manipulation", transformStyle: "preserve-3d", transformOrigin: "center", willChange: "transform", transform: useMotionTemplate`rotateZ(${rotationDegree}deg)` }}
             className="w-full h-full"
           >
             <Image 

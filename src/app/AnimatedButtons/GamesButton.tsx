@@ -55,11 +55,14 @@ const NeumorphismButton = () => {
       y.set(0);
   };
 
+  const navigateToGames = () => {window.open('https://itch.io/profile/brendan-a', '_blank')};
+
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={navigateToGames}
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,
