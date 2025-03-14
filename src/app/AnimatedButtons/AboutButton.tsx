@@ -101,8 +101,8 @@ const NeumorphismButton = () => {
     >
       <div className="w-full h-full flex items-center justify-center">
         <motion.button 
-          whileHover={{ scale: 1.4 }}
-          whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
+          whileHover={{ scale: 2.8 }}
+          whileTap={{ scale: 0.80 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           onClick={navigateToAbout}
           className="flex flex-col items-center justify-center h-[min(17vw,17vh)] w-[min(17vw,17vh)]"
@@ -118,11 +118,11 @@ const NeumorphismButton = () => {
           >
             <Image 
               unoptimized
-              src="https://aeriab.github.io/official_profile_picture.svg"
+              src="https://aeriab.github.io/goofy_selfie(4).png"
               alt="Protein Logo" 
               className="w-full h-full"
-              width={10}
-              height={10}
+              width={20}
+              height={20}
             />
           </motion.div>
 
