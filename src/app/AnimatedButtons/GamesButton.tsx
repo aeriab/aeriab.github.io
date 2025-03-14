@@ -71,7 +71,7 @@ const NeumorphismButton = () => {
           whileHover={{ scale: 1.4 }}
           whileTap={{ scale: 0.95 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          onClick={() => window.location.href = 'https://aeriab.github.io/games/'} 
+          onClick={() => window.open('https://itch.io/profile/brendan-a', '_blank')} 
           className="flex flex-col items-center justify-center h-[min(25vw,25vh)] w-[min(25vw,25vh)]"
         >
           <motion.div

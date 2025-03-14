@@ -67,20 +67,19 @@ const NeumorphismButton = () => {
     handlePointerLeave();
   };
 
+  const handleTouchStart = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   // Add event listeners for touch events
   useEffect(() => {
     const button = ref.current;
     if (!button) return;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      // Prevent default to avoid scrolling when interacting with the button
-      e.preventDefault();
-    };
-
-    button.addEventListener('touchstart', handleTouchStart, { passive: false });
-    
+  
+    button.addEventListener("touchstart", handleTouchStart);
     return () => {
-      button.removeEventListener('touchstart', handleTouchStart);
+      button.removeEventListener("touchstart", handleTouchStart);
     };
   }, []);
 
@@ -90,11 +89,13 @@ const NeumorphismButton = () => {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerCancel}
+      onTouchStart={handleTouchStart} // Ensure touch interactions are captured
+      onTouchEnd={navigateToAbout} // Trigger navigation on tap
       style={{
         transformStyle: "preserve-3d",
         transform: useMotionTemplate`translateX(${xSpring}px) translateY(${ySpring}px)`,
         willChange: "transform",
-        touchAction: "none", // Prevent browser handling of all panning and zooming gestures
+        touchAction: "manipulation", // Allow taps while preventing zoom
       }} 
       className="w-full h-full"
     >

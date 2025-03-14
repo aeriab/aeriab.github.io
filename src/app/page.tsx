@@ -5,7 +5,7 @@ import ThreeDScene from "../../components/ThreeDScene";
 import NameCard from "./nameCard";
 import ReloadButton from "./AnimatedButtons/ReloadButton";
 import HomeButton from "./AnimatedButtons/HomeButton";
-import ProjectButton from "./AnimatedButtons/ProjectButton";
+// import ProjectButton from "./AnimatedButtons/ProjectButton";
 import AboutButton from "./AnimatedButtons/AboutButton";
 import BlogButton from "./AnimatedButtons/BlogButton";
 import GamesButton from "./AnimatedButtons/GamesButton";
@@ -20,7 +20,7 @@ import { useState, useEffect, useRef } from "react";
 
 function HomeContent() {
   const { currentView } = useNavigation();
-  const isInProjectsView = currentView === "inProjects";
+  // const isInProjectsView = currentView === "inProjects";
   const isInAboutView = currentView === "inAbout";
   const isInHomeView = currentView === "inHome";
   
@@ -80,7 +80,7 @@ function HomeContent() {
       </div>
       <motion.div
         ref={mainDivRef}
-        className="absolute top-0 left-0 w-full h-full z-10"
+        className="absolute top-0 left-0 w-full h-full z-10 p-[4%]"
         animate={{
           opacity: (isMouseDown || isPointerDown) ? 0.0 : 1,
           pointerEvents: isInArtMode ? "none" : "auto",
@@ -99,133 +99,108 @@ function HomeContent() {
 
         {/* Home */}
         <motion.div
-          className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-3 grid-rows-3 select-none"
+          className="p-[3vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-5 grid-rows-[1fr_1fr_2fr_2fr] select-none"
           animate={{ y: isInHomeView ? 0 : "-150vh" }}
           transition={{ duration: 0.9, ease: "easeInOut" }}
         >
+          {/* Row 1: Nameplate */}
           <div className="big-style h-0 text-white lexend text-[min(8vw,8vh)] col-start-1 col-end-2 row-start-1 row-end-2 z-13">
             <PointerSwipe />
           </div>
-          <div className="big-style h-[var(--custom-top-height)] text-white lexend col-start-1 col-end-4 row-start-1 row-end-2">
+          <div className="big-style h-[var(--custom-top-height)] text-white lexend col-start-1 col-end-6 row-start-1 row-end-2">
             <NameCard />
           </div>
-          <div className="big-style h-[var(--custom-middle-height)]"><ReloadButton /></div>
-          <div className="big-style h-[var(--custom-middle-height)] z-11"><ProjectButton /></div>
-          <div className="big-style h-[var(--custom-middle-height)]"><AboutButton /></div>
-          <div className="big-style h-[var(--custom-bottom-height)]"><BlogButton /></div>
-          <div className="big-style h-[var(--custom-bottom-height)]"><GamesButton /></div>
-          <div className="big-style h-[var(--custom-bottom-height)]"><ResumeButton /></div>
-        </motion.div>
-
-        {/* Projects */}
-        <motion.div
-          className="absolute top-0 left-0 w-full h-full z-12 select-none"
-          initial={{ y: "150vh", opacity: 0 }}
-          animate={{
-            y: isInProjectsView ? 0 : "150vh",
-            opacity: isInProjectsView ? ((isMouseDown || isPointerDown) ? 0.05 : 1) : 0,
-          }}
-          transition={{
-            y: { duration: 0.9, ease: "easeInOut" },
-            opacity: { duration: 0.4, ease: "easeInOut" },
-          }}
-        >
-          <div>
-            <br />
-            <br />
-            <HomeButton />
-            <br />
-            <br />
-            <br />
-            <br />
-            <SocialMediaButtons 
-              github="https://github.com/aeriab"
-              linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
-              instagram="https://instagram.com/brendan_aeria1622"
-              twitter="https://x.com/BrendanAeria"
-              youtube="https://youtube.com/@brendan3511/featured"
-              className="mt-4"
-            />
-            <br />
-            <br />
-            <br />
-            <h1 className="flex items-center justify-center text-xl">PROJECTS</h1>
-            <h1 className="flex items-center justify-center text-xl">UNDER CONSTRUCTION</h1>
-          </div>
-        </motion.div>
-
-        {/* About View */}
-        <motion.div
-          className="grid gap-8 border-3 absolute top-0 left-0 right-0 h-[100vh] w-[100vw]"
-          initial={{ y: "150vh", opacity: 0 }}
-          animate={{
-            y: !isInAboutView ? "150vh" : 0,
-            opacity: !isInAboutView ? 0 : ((isMouseDown || isPointerDown) ? 0.05 : 1),
-          }}
-          transition={{
-            y: { duration: 0.9, ease: "easeInOut" },
-            opacity: { duration: 0.4, ease: "easeInOut" },
-          }}
-        >
-          <div className="flex flex-col gap-4 h-[100vh] w-[100vw]">
-            <div className="flex-col flex-1 p-4 border border-gray-300 rounded-lg flex items-center justify-center h-[20vh]">
-              <h1 className="text-[min(5vw,5vh)] text-[#000000] font-bold lexend text-center h-[5vh]">Brendan Aeria</h1>
-              <SocialMediaButtons
-                github="https://github.com/aeriab"
-                linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
-                instagram="https://instagram.com/brendan_aeria1622"
-                twitter="https://x.com/BrendanAeria"
-                youtube="https://youtube.com/@brendan3511/featured"
-                className="mt-8 h-10vh"
-              />
-            </div>
-            
-            
-            {/* Second row (single column) */}
-            <div className="flex flex-row gap-4 h-[60vh]">
-              {/* First column */}
-              <div className="flex-1 p-4 border border-gray-300 rounded-lg flex items-center justify-center">
-                <img src="https://aeriab.github.io/PowayPark_Profile_Pic.jpg" alt="Picture" className="w-[min(30vw,30vh)] rounded-lg" />
-              </div>
-              
-              {/* Second column */}
-              <div className="flex-1 p-4 border border-gray-300 rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-[min(1.8vw,1.8vh)] text-[#000000] font-bold lexend mt-4 mb-2">
-                    Computation and Systems Biology Undergraduate · UCLA class of 2027
-                  </p>
-                  <p className="text-[min(2vw,2vh)] text-[#000000] font-bold lexend mt-8 leading-relaxed max-w-[50vw] text-left">
-                    As the research coordinator for CruX UCLA, I lead the development of Brain Computer Interface software and contribute to research publications on EEG/EMG transfer learning. My experience extends to game development, where I have won two university-wide game jams and serve as the Game Jam Officer for ACM Studio UCLA. Additionally, I have internship experience in AI content development and machine learning model engineering.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full h-[20vh] p-4 border border-gray-300 rounded-lg flex items-center justify-center">
-              <HomeButton />
-            </div>
-          </div>
-          {/* <div className="flex justify-center items-center">
-            <img src="https://aeriab.github.io/PowayPark_Profile_Pic.jpg" alt="Picture" className="w-[min(30vw,30vh)] rounded-lg" />
-            <h1 className="text-[min(5vw,5vh)] text-[#000000] font-bold lexend text-center">Brendan Aeria</h1>
+          
+          {/* Row 2: Social Media Buttons */}
+          <div className="big-style h-[var(--custom-tmiddle-height)] col-start-2 col-end-5 row-start-2 row-end-3">
             <SocialMediaButtons
               github="https://github.com/aeriab"
               linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
               instagram="https://instagram.com/brendan_aeria1622"
               twitter="https://x.com/BrendanAeria"
               youtube="https://youtube.com/@brendan3511/featured"
-              className="mt-8" // Increased margin
+              // className="mt-8"
             />
           </div>
-          <div>
-            <p className="text-[min(1.8vw,1.8vh)] text-[#000000] font-bold lexend text-center mt-4 mb-2">
-              Computation and Systems Biology Undergraduate · UCLA class of 2027
-            </p>
-            <br />
-            <p className="text-[min(2vw,2vh)] text-[#000000] font-bold lexend mt-8 leading-relaxed max-w-[50vw]">
-              As the research coordinator for CruX UCLA, I lead the development of Brain Computer Interface software and contribute to research publications on EEG/EMG transfer learning. My experience extends to game development, where I have won two university-wide game jams and serve as the Game Jam Officer for ACM Studio UCLA. Additionally, I have internship experience in AI content development and machine learning model engineering.
-            </p>
-          </div> */}
+          
+          {/* Row 3: Refresh and About */}
+          <div className="big-style h-[var(--custom-middle-height)] col-start-2 col-end-3 row-start-3 row-end-4">
+            <ReloadButton />
+          </div>
+          <div className="big-style h-[var(--custom-middle-height)] col-start-4 col-end-5 row-start-3 row-end-4">
+            <AboutButton />
+          </div>
+          
+          {/* Row 4: Blog, Games, and Resume */}
+          <div className="big-style h-[var(--custom-bottom-height)] col-start-1 col-end-2 row-start-4 row-end-5">
+            <BlogButton />
+          </div>
+          <div className="big-style h-[var(--custom-bottom-height)] col-start-3 col-end-4 row-start-4 row-end-5">
+            <GamesButton />
+          </div>
+          <div className="big-style h-[var(--custom-bottom-height)] col-start-5 col-end-6 row-start-4 row-end-5">
+            <ResumeButton />
+          </div>
+        </motion.div>
+
+        {/* About View */}
+        <motion.div
+          className="p-[6vh] content-normal gap-[0vh] h-[99vh] grid grid-cols-[1fr_8fr_1fr_8fr_1fr] grid-rows-[1fr_1fr_6fr_1fr_1fr] select-none"
+          initial={{ y: "150vh", opacity: 0 }}
+          animate={{
+            // y: !isInAboutView ? "150vh" : 0,
+            y: isInHomeView ? "50vh" : "-100vh",
+            opacity: !isInAboutView ? 0 : ((isMouseDown || isPointerDown) ? 0.05 : 1),
+          }}
+          
+          transition={{ duration: 0.9, ease: "easeInOut" }}
+        >
+          <div className="big-style col-start-1 col-end-6 row-start-1 row-end-2">
+            <h1 className="text-[min(5vw,5vh)] text-[#000000] font-bold lexend text-center h-[5vh]">Brendan Aeria</h1>
+          </div>
+          <div className="big-style col-start-1 col-end-6 row-start-2 row-end-3">
+            <SocialMediaButtons
+              github="https://github.com/aeriab"
+              linkedin="https://linkedin.com/in/brendan-aeria-7494a7218/"
+              instagram="https://instagram.com/brendan_aeria1622"
+              twitter="https://x.com/BrendanAeria"
+              youtube="https://youtube.com/@brendan3511/featured"
+            />
+          </div>
+
+          <div className="big-style col-start-2 col-end-3 row-start-3 row-end-4">
+            <motion.img 
+              src="https://aeriab.github.io/PowayPark_Profile_Pic.jpg" 
+              alt="Picture" 
+              className="w-[min(30vw,30vh)] rounded-lg"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            />
+          </div>
+          <div className="big-style col-start-4 col-end-5 row-start-3 row-end-4">
+            <motion.div
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <p className="text-[min(3.2vw,3.2vh)] text-[#000000] font-bold lexend">
+                Computation and Systems Biology Undergraduate · UCLA class of 2027 <br />
+              </p>
+              <p className="text-[min(1.6vw,1.6vh)] text-[#000000] lexend text-left mt-[3.0vh]">
+                As the research coordinator for CruX UCLA, I lead the development of Brain Computer Interface software and contribute to research publications on EEG/EMG transfer learning. My experience extends to game development, where I have won two university-wide game jams and serve as the Game Jam Officer for ACM Studio UCLA. Additionally, I have internship experience in AI content development and machine learning model engineering.
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div 
+            className="big-style col-start-1 col-end-6 row-start-4 row-end-5"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <HomeButton />
+          </motion.div>
         </motion.div>
       </motion.div>
 
