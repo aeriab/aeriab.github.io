@@ -70,10 +70,11 @@ const NeumorphismButton = () => {
         willChange: "transform",
       }} className="w-full h-full"
     >
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="aspect-square w-full h-full flex items-center justify-center border-2">
         <motion.button 
-          whileHover={{ scale: 1.4 }}
-          // Slightly shrinks when clicked
+          initial={{ scale: 1.5 }}
+          whileHover={{ scale: 2.1 }}
+          whileTap={{ scale: 0.80 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           onClick={() => window.open('https://aeriab.github.io/resume/resume_2025.pdf', '_blank')}
           className="flex flex-col items-center justify-center h-[min(20vw,20vh)] w-[min(20vw,20vh)]"
@@ -88,10 +89,10 @@ const NeumorphismButton = () => {
             <Image 
               unoptimized
               
-              src="https://aeriab.github.io/official_profile_picture.svg"
+              src="https://aeriab.github.io/UCLA_Bruins.png"
               // src="/official_profile_picture.SVG" 
               alt="Protein Logo" 
-              className="w-full h-full"
+              className="w-full h-full object-contain"
               width={10} // Specify the width of the image (or use a value based on your layout)
               height={10} // Specify the height of the image (or use a value based on your layout)
             />

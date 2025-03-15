@@ -121,7 +121,7 @@ const NeumorphismButton = () => {
               unoptimized
               src="https://aeriab.github.io/goofy_selfie(4).png"
               alt="Protein Logo" 
-              className="w-full h-full"
+              className="w-full h-full object-contain"
               width={20}
               height={20}
             />
