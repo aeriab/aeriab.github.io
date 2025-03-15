@@ -18,7 +18,7 @@ const ButtonWrapper = () => {
   );
 };
 
-const TRANSLATE_RANGE = 150.0;
+const TRANSLATE_RANGE = 0.33;
 
 const NeumorphismButton = () => {
   const { navigateToHome } = useNavigation();
@@ -43,8 +43,8 @@ const NeumorphismButton = () => {
     const pointerY = e.clientY - rect.top;
 
     // Map pointer coordinates to translation range
-    const tX = (pointerX / width - 0.5) * TRANSLATE_RANGE;
-    const tY = (pointerY / height - 0.5) * TRANSLATE_RANGE;
+    const tX = (pointerX / width - 0.5) * width * TRANSLATE_RANGE;
+    const tY = (pointerY / height - 0.5) * height * TRANSLATE_RANGE;
 
     x.set(tX);
     y.set(tY);

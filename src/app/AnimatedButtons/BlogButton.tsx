@@ -18,7 +18,7 @@ const ButtonWrapper = () => {
 
 
 
-const TRANSLATE_RANGE = 150.0;
+const TRANSLATE_RANGE = 0.33;
 
 const NeumorphismButton = () => {
 
@@ -42,8 +42,8 @@ const NeumorphismButton = () => {
     const mouseY = e.clientY - rect.top;
 
     // Map mouse coordinates to translation range
-    const tX = (mouseX / width - 0.5) * TRANSLATE_RANGE;
-    const tY = (mouseY / height - 0.5) * TRANSLATE_RANGE;
+    const tX = (mouseX / width - 0.5) * width * TRANSLATE_RANGE;
+    const tY = (mouseY / height - 0.5) * height * TRANSLATE_RANGE;
 
     x.set(tX);
     y.set(tY);
