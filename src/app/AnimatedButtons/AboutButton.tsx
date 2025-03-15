@@ -25,7 +25,7 @@ const ButtonWrapper = () => {
   );
 };
 
-const TRANSLATE_RANGE = 150.0;
+const TRANSLATE_RANGE = 0.2;
 
 const NeumorphismButton = () => {
   const { navigateToAbout } = useNavigation();
@@ -50,8 +50,8 @@ const NeumorphismButton = () => {
     const pointerY = e.clientY - rect.top;
 
     // Map pointer coordinates to translation range
-    const tX = (pointerX / width - 0.5) * TRANSLATE_RANGE;
-    const tY = (pointerY / height - 0.5) * TRANSLATE_RANGE;
+    const tX = (pointerX / width - 0.5) * width * TRANSLATE_RANGE;
+    const tY = (pointerY / height - 0.5) * width * TRANSLATE_RANGE;
 
     x.set(tX);
     y.set(tY);
@@ -101,7 +101,8 @@ const NeumorphismButton = () => {
     >
       <div className="w-full h-full flex items-center justify-center">
         <motion.button 
-          whileHover={{ scale: 2.8 }}
+          initial={{ scale: 1.5 }}
+          whileHover={{ scale: 2.1 }}
           whileTap={{ scale: 0.80 }} // Slightly shrinks when clicked
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           onClick={navigateToAbout}
