@@ -69,7 +69,7 @@ const NeumorphismButton = () => {
         willChange: "transform",
       }} className="w-full h-full"
     >
-      <div className="w-full h-full flex items-center justify-center border-2">
+      <div className="w-full h-full flex items-center justify-center">
         <motion.button 
           initial={{ scale: 1.5 }}
           whileHover={{ scale: 2.1 }}
