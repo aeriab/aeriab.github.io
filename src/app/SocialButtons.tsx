@@ -96,7 +96,7 @@ const SocialMediaButtons: React.FC<{
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="w-[min(4vw,3vh)] h-[min(4vw,3vh)] text-black"
+            className="w-[min(4vw,4vh)] h-[min(4vw,4vh)] text-black"
           >
             <path d="M16 11.37A4 4 0 1 1 12.63 8.37 4 4 0 0 1 16 11.37z" />
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
